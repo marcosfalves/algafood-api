@@ -3,3 +3,7 @@ spring:
     url: "jdbc:mysql://localhost:3306/algafood?createDatabaseIfNotExist=true&serverTimezone=UTC"
     username: root
     password: 1234
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create
