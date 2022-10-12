@@ -25,7 +25,7 @@ public class RestauranteMain {
 
         System.out.println("Listando somente um:");
         Restaurante restaurante = restauranteRepository.buscar(1L);
-        System.out.println(restaurante.getNome());
+        System.out.println(restaurante);
 
         System.out.println("Adicionando:");
         Restaurante novoRestaurante = new Restaurante();
