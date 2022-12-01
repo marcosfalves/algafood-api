@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -30,45 +29,34 @@ public class Pedido {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     private BigDecimal subtotal;
-
-    @Column(nullable = false)
     private BigDecimal taxaFrete;
-
-    @Column(nullable = false)
     private BigDecimal valorTotal;
 
-    @CreationTimestamp
-    @Column(nullable = false, columnDefinition = "datetime")
-    private LocalDateTime dataCriacao;
-
-    @Column(columnDefinition = "datetime")
-    private LocalDateTime dataConfirmacao;
-
-    @Column(columnDefinition = "datetime")
-    private LocalDateTime dataCancelamento;
-
-    @Column(columnDefinition = "datetime")
-    private LocalDateTime dataEntrega;
+    @Embedded
+    private Endereco enderecoEntrega;
 
     @Enumerated(EnumType.STRING)
     private StatusPedido status;
 
+    @CreationTimestamp
+    private LocalDateTime dataCriacao;
+
+    private LocalDateTime dataConfirmacao;
+    private LocalDateTime dataCancelamento;
+    private LocalDateTime dataEntrega;
+
     @ManyToOne
-    @JoinColumn(nullable = false, name = "forma_pagamento_id")
+    @JoinColumn(nullable = false)
     private FormaPagamento formaPagamento;
 
     @ManyToOne
-    @JoinColumn(nullable = false, name = "restaurante_id")
+    @JoinColumn(nullable = false)
     private Restaurante restaurante;
 
     @ManyToOne
-    @JoinColumn(nullable = false, name = "usuario_id")
+    @JoinColumn(nullable = false, name = "usuario_cliente_id")
     private Usuario cliente;
-
-    @Embedded
-    private Endereco enderecoEntrega;
 
     @OneToMany(mappedBy = "pedido")
     private List<ItemPedido> itens = new ArrayList<>();

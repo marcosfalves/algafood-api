@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -23,23 +22,17 @@ public class ItemPedido {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Integer quantidade;
+    private BigDecimal precoUnitario;
+    private BigDecimal precoTotal;
+    private String observacao;
+
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "pedido_id")
+    @JoinColumn(nullable = false)
     private Pedido pedido;
 
     @ManyToOne
-    @JoinColumn(name = "produto_id")
+    @JoinColumn(nullable = false)
     private Produto produto;
-
-    @Column(nullable = false)
-    private Integer quantidade;
-
-    @Column(nullable = false)
-    private BigDecimal precoUnitario;
-
-    @Column(nullable = false)
-    private BigDecimal precoTotal;
-
-    private String observacao;
 }
