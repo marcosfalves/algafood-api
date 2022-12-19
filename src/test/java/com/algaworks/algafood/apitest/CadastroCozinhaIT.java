@@ -1,4 +1,4 @@
-package com.algaworks.algafood;
+package com.algaworks.algafood.apitest;
 
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.repository.CozinhaRepository;
