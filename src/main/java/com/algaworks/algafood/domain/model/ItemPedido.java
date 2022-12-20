@@ -27,7 +27,6 @@ public class ItemPedido {
     private BigDecimal precoTotal;
     private String observacao;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(nullable = false)
     private Pedido pedido;
