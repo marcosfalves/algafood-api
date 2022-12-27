@@ -12,6 +12,7 @@ spring:
     deserialization:
       fail-on-unknown-properties: true
       fail-on-ignored-properties: true
+#    property-naming-strategy: SNAKE_CASE
   jpa:
     show-sql: true
     properties:
