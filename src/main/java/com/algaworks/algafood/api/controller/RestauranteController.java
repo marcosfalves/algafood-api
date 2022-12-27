@@ -59,12 +59,15 @@ public class RestauranteController {
 
     @GetMapping
     public List<RestauranteModel> listar(){
-        return restauranteModelAssembler.toCollectionModel(restauranteRepository.findAll());
+        List<Restaurante> todosRestaurantes = restauranteRepository.findAll();
+
+        return restauranteModelAssembler.toCollectionModel(todosRestaurantes);
     }
 
     @GetMapping("/{restauranteId}")
     public RestauranteModel buscar(@PathVariable Long restauranteId){
         Restaurante restaurante = cadastroRestaurante.buscarOuFalhar(restauranteId);
+
         return restauranteModelAssembler.toModel(restaurante);
     }
 
@@ -74,7 +77,9 @@ public class RestauranteController {
         try {
             Restaurante restaurante = restauranteInputDisassembler.toDomainObject(restauranteInput);
 
-            return restauranteModelAssembler.toModel(cadastroRestaurante.salvar(restaurante));
+            restaurante = cadastroRestaurante.salvar(restaurante);
+
+            return restauranteModelAssembler.toModel(restaurante);
         } catch (CozinhaNaoEncontradaException e) {
             throw new NegocioException(e.getMessage(), e);
         }
@@ -88,7 +93,9 @@ public class RestauranteController {
 
             restauranteInputDisassembler.copyToDomainObject(restauranteInput, restauranteAtual);
 
-            return restauranteModelAssembler.toModel(cadastroRestaurante.salvar(restauranteAtual));
+            restauranteAtual = cadastroRestaurante.salvar(restauranteAtual);
+
+            return restauranteModelAssembler.toModel(restauranteAtual);
         } catch (CozinhaNaoEncontradaException e) {
             throw new NegocioException(e.getMessage(), e);
         }
