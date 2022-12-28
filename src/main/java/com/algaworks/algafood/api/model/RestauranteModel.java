@@ -12,6 +12,7 @@ public class RestauranteModel {
     private String nome;
     private BigDecimal taxaFrete;
     private CozinhaModel cozinha;
+    private Boolean ativo;
 //    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
 //    private OffsetDateTime dataCadastro;
 }
