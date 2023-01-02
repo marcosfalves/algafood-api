@@ -13,6 +13,7 @@ public class RestauranteModel {
     private BigDecimal taxaFrete;
     private CozinhaModel cozinha;
     private Boolean ativo;
+    private Boolean aberto;
     private EnderecoModel endereco;
 //    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
 //    private OffsetDateTime dataCadastro;
