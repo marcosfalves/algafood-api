@@ -6,6 +6,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,7 +20,7 @@ public class EstadoModelAssembler {
         return modelMapper.map(estado, EstadoModel.class);
     }
 
-    public List<EstadoModel> toCollectionModel(List<Estado> estados){
+    public List<EstadoModel> toCollectionModel(Collection<Estado> estados){
         return estados.stream()
                 .map(this::toModel)
                 .collect(Collectors.toList());

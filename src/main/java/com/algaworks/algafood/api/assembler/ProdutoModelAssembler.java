@@ -6,6 +6,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,7 +20,7 @@ public class ProdutoModelAssembler {
         return modelMapper.map(produto, ProdutoModel.class);
     }
 
-    public List<ProdutoModel> toCollectionModel(List<Produto> produtos){
+    public List<ProdutoModel> toCollectionModel(Collection<Produto> produtos){
         return produtos.stream()
                 .map(this::toModel)
                 .collect(Collectors.toList());
