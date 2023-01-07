@@ -1,9 +1,13 @@
 package com.algaworks.algafood.domain.model;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -19,13 +23,15 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-@Data
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Entity
 public class Pedido {
 
-    @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -38,7 +44,7 @@ public class Pedido {
     private Endereco enderecoEntrega;
 
     @Enumerated(EnumType.STRING)
-    private StatusPedido status;
+    private StatusPedido status = StatusPedido.CRIADO;
 
     @CreationTimestamp
     private OffsetDateTime dataCriacao;
@@ -49,6 +55,7 @@ public class Pedido {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
+    @ToString.Exclude
     private FormaPagamento formaPagamento;
 
     @ManyToOne
@@ -59,22 +66,35 @@ public class Pedido {
     @JoinColumn(nullable = false, name = "usuario_cliente_id")
     private Usuario cliente;
 
-    @OneToMany(mappedBy = "pedido")
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
+    @ToString.Exclude
     private List<ItemPedido> itens = new ArrayList<>();
 
     public void calcularValorTotal() {
-        this.subtotal = getItens().stream()
-                .map(item -> item.getPrecoTotal())
+        definirFrete();
+        itens.forEach(ItemPedido::calcularPrecoTotal);
+
+        subtotal = getItens().stream()
+                .map(ItemPedido::getPrecoTotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        this.valorTotal = this.subtotal.add(this.taxaFrete);
+        valorTotal = subtotal.add(taxaFrete);
     }
 
     public void definirFrete() {
-        setTaxaFrete(getRestaurante().getTaxaFrete());
+        taxaFrete = restaurante.getTaxaFrete();
     }
 
-    public void atribuirPedidoAosItens() {
-        getItens().forEach(item -> item.setPedido(this));
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Pedido pedido = (Pedido) o;
+        return id != null && Objects.equals(id, pedido.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }
