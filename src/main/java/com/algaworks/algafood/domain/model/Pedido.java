@@ -20,11 +20,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -36,6 +38,8 @@ public class Pedido {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private String codigo;
 
     private BigDecimal subtotal;
     private BigDecimal taxaFrete;
@@ -71,6 +75,11 @@ public class Pedido {
     @ToString.Exclude
     private List<ItemPedido> itens = new ArrayList<>();
 
+    @PrePersist
+    private void gerarCodigo() {
+        this.codigo = UUID.randomUUID().toString();
+    }
+
     public void calcularValorTotal() {
         definirFrete();
         itens.forEach(ItemPedido::calcularPrecoTotal);
@@ -86,29 +95,29 @@ public class Pedido {
         taxaFrete = restaurante.getTaxaFrete();
     }
 
-    public void confirmar(){
+    public void confirmar() {
         setStatus(StatusPedido.CONFIRMADO);
         setDataConfirmacao(OffsetDateTime.now());
     }
 
-    public void entregar(){
+    public void entregar() {
         setStatus(StatusPedido.ENTREGUE);
         setDataEntrega(OffsetDateTime.now());
     }
 
-    public void cancelar(){
+    public void cancelar() {
         setStatus(StatusPedido.CANCELADO);
         setDataCancelamento(OffsetDateTime.now());
     }
 
-    private void setStatus(StatusPedido novoStatus){
-        if (status == novoStatus){
-            throw new NegocioException(String.format("Pedido %d já foi %s", id, status.getDescricao()));
+    private void setStatus(StatusPedido novoStatus) {
+        if (status == novoStatus) {
+            throw new NegocioException(String.format("Pedido %s já foi %s", codigo, status.getDescricao()));
         }
 
-        if (status.naoPodeAlterarPara(novoStatus)){
+        if (status.naoPodeAlterarPara(novoStatus)) {
             throw new NegocioException(
-                    String.format("Status do pedido %d não pode ser alterado de %s para %s", id,
+                    String.format("Status do pedido %s não pode ser alterado de %s para %s", codigo,
                             status.getDescricao(), novoStatus.getDescricao())
             );
         }
