@@ -1,5 +1,6 @@
 package com.algaworks.algafood.domain.model;
 
+import com.algaworks.algafood.domain.exception.NegocioException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -83,6 +84,35 @@ public class Pedido {
 
     public void definirFrete() {
         taxaFrete = restaurante.getTaxaFrete();
+    }
+
+    public void confirmar(){
+        setStatus(StatusPedido.CONFIRMADO);
+        setDataConfirmacao(OffsetDateTime.now());
+    }
+
+    public void entregar(){
+        setStatus(StatusPedido.ENTREGUE);
+        setDataEntrega(OffsetDateTime.now());
+    }
+
+    public void cancelar(){
+        setStatus(StatusPedido.CANCELADO);
+        setDataCancelamento(OffsetDateTime.now());
+    }
+
+    private void setStatus(StatusPedido novoStatus){
+        if (status == novoStatus){
+            throw new NegocioException(String.format("Pedido %d já foi %s", id, status.getDescricao()));
+        }
+
+        if (status.naoPodeAlterarPara(novoStatus)){
+            throw new NegocioException(
+                    String.format("Status do pedido %d não pode ser alterado de %s para %s", id,
+                            status.getDescricao(), novoStatus.getDescricao())
+            );
+        }
+        this.status = novoStatus;
     }
 
     @Override
