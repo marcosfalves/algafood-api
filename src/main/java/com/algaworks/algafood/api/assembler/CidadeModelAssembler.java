@@ -6,6 +6,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,7 +20,7 @@ public class CidadeModelAssembler {
         return modelMapper.map(cidade, CidadeModel.class);
     }
 
-    public List<CidadeModel> toCollectionModel(List<Cidade> cidades){
+    public List<CidadeModel> toCollectionModel(Collection<Cidade> cidades){
         return cidades.stream()
                 .map(this::toModel)
                 .collect(Collectors.toList());
