@@ -10,6 +10,9 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.Predicate;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,13 +24,20 @@ public class VendaQueryServiceImpl implements VendaQueryService {
     private EntityManager manager;
 
     @Override
-    public List<VendaDiaria> consultarVendasDiarias(VendaDiariaFilter filter) {
+    public List<VendaDiaria> consultarVendasDiarias(VendaDiariaFilter filter, ZoneOffset zoneOffset) {
         var builder = manager.getCriteriaBuilder();
         var query = builder.createQuery(VendaDiaria.class);
         var root = query.from(Pedido.class);
 
+        var functionConvertTzDataCriacao = builder.function(
+                "convert_tz", Date.class, root.get("dataCriacao"),
+                builder.literal("+00:00"), builder.literal(
+                        zoneOffset.getId().equals(ZoneOffset.UTC.getId()) ? "+00:00" : zoneOffset.getId()
+                )
+        );
+
         var functionDateDataCriacao = builder.function(
-                "date", Date.class, root.get("dataCriacao"));
+                "date", Date.class, functionConvertTzDataCriacao);
 
         var selection = builder.construct(VendaDiaria.class,
                 functionDateDataCriacao,
@@ -43,11 +53,13 @@ public class VendaQueryServiceImpl implements VendaQueryService {
         }
 
         if (filter.getDataCriacaoInicio() != null) {
-            predicates.add(builder.greaterThanOrEqualTo(root.get("dataCriacao"), filter.getDataCriacaoInicio()));
+            OffsetDateTime offsetDateTime = OffsetDateTime.of(filter.getDataCriacaoInicio(), LocalTime.MIN, zoneOffset);
+            predicates.add(builder.greaterThanOrEqualTo(root.get("dataCriacao"), offsetDateTime));
         }
 
         if (filter.getDataCriacaoFim() != null) {
-            predicates.add(builder.lessThanOrEqualTo(root.get("dataCriacao"), filter.getDataCriacaoFim()));
+            OffsetDateTime offsetDateTime = OffsetDateTime.of(filter.getDataCriacaoFim(), LocalTime.MAX, zoneOffset);
+            predicates.add(builder.lessThanOrEqualTo(root.get("dataCriacao"), offsetDateTime));
         }
 
         query.select(selection);
