@@ -21,3 +21,17 @@ spring:
         format_sql: false
   flyway:
     locations: "classpath:db/migration,classpath:db/testdata"
+#logging:
+#  level:
+#    org:
+#      hibernate:
+#        type:
+#          descriptor:
+#            sql:
+#              BasicBinder: TRACE
+
+#logging:
+#  level:
+#    org:
+#      hibernate:
+#        type: trace
