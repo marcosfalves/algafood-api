@@ -9,7 +9,17 @@ import java.util.UUID;
 public interface FotoStorageService {
     void armazenar(NovaFoto novaFoto);
 
-    default String gerarNomeArquivo(String nomeOriginal){
+    void remover(String nomeArquivo);
+
+    default void substituir(String nomeArquivoAntigo, NovaFoto novaFoto) {
+        this.armazenar(novaFoto);
+
+        if (nomeArquivoAntigo != null) {
+            this.remover(nomeArquivoAntigo);
+        }
+    }
+
+    default String gerarNomeArquivo(String nomeOriginal) {
         return UUID.randomUUID() + "_" + nomeOriginal;
     }
 
