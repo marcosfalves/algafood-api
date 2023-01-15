@@ -35,6 +35,13 @@ public class FotoProduto {
     private String contentType;
     private Long tamanho;
 
+    public Long getRestauranteId(){
+        if (produto != null){
+            return produto.getRestaurante().getId();
+        }
+        return null;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
