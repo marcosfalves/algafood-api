@@ -39,3 +39,8 @@ spring:
 #    org:
 #      hibernate:
 #        type: trace
+
+algafood:
+  storage:
+    local:
+      diretorio-fotos: "/home/malves/catalogo"
