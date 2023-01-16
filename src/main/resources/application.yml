@@ -25,6 +25,18 @@ spring:
         format_sql: false
   flyway:
     locations: "classpath:db/migration,classpath:db/testdata"
+
+algafood:
+  storage:
+    local:
+      diretorio-fotos: "/home/malves/catalogo"
+    s3:
+      id-chave-acesso: ${ID_CHAVE_ACESSO}
+      chave-acesso-secreta: ${CHAVE_ACESSO_SECRETA}
+      bucket: mfa-algafood-api
+      regiao: us-east-1
+      diretorio-fotos: catalogo
+
 #logging:
 #  level:
 #    org:
@@ -39,8 +51,3 @@ spring:
 #    org:
 #      hibernate:
 #        type: trace
-
-algafood:
-  storage:
-    local:
-      diretorio-fotos: "/home/malves/catalogo"
