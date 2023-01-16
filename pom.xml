@@ -17,6 +17,7 @@
 		<java.version>17</java.version>
 		<modelmapper.version>3.1.1</modelmapper.version>
 		<jasperreports.version>6.20.0</jasperreports.version>
+		<aws-java-sdk-s3.version>1.12.385</aws-java-sdk-s3.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -93,6 +94,11 @@
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports-fonts</artifactId>
 			<version>${jasperreports.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-s3</artifactId>
+			<version>${aws-java-sdk-s3.version}</version>
 		</dependency>
 	</dependencies>
 
