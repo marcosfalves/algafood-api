@@ -26,6 +26,11 @@ spring:
         format_sql: false
   flyway:
     locations: "classpath:db/migration,classpath:db/testdata"
+  mail:
+    host: email-smtp.us-east-1.amazonaws.com
+    port: 587
+    username: ${SMTP_EMAIL_USUARIO}
+    password: ${SMTP_EMAIL_SENHA}
 
 algafood:
   storage:
