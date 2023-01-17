@@ -29,6 +29,7 @@ spring:
 
 algafood:
   storage:
+    tipo: s3
     local:
       diretorio-fotos: "/home/malves/catalogo"
     s3:
