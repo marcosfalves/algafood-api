@@ -42,6 +42,7 @@ public class S3FotoStorageService implements FotoStorageService {
             String caminhoArquivo = getCaminhoArquivo(novaFoto.getNomeArquivo());
             var objectMetadata = new ObjectMetadata();
             objectMetadata.setContentType(novaFoto.getContentType());
+            objectMetadata.setContentLength(novaFoto.getTamanho());
 
             var putObjectRequest = new PutObjectRequest(
                     storageProperties.getS3().getBucket(),
