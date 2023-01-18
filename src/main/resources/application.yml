@@ -41,6 +41,7 @@ spring:
 
 algafood:
   email:
+    impl: fake
     remetente: AlgaFood <marcosf_alves@outlook.com>
 
   storage:
