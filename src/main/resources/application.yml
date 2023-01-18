@@ -33,6 +33,9 @@ spring:
     username: ${SMTP_EMAIL_USUARIO}
     password: ${SMTP_EMAIL_SENHA}
   freemarker:
+    template-loader-path: classpath:/templates/
+    content-type: text/html
+    charset: UTF-8
     settings:
       locale: pt_BR
 
