@@ -41,8 +41,10 @@ spring:
 
 algafood:
   email:
-    impl: fake
+    impl: sandbox
     remetente: AlgaFood <marcosf_alves@outlook.com>
+    sandbox:
+      destinatario: marquinhofalves@gmail.com
 
   storage:
     tipo: s3
