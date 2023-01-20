@@ -27,7 +27,25 @@ spring:
   flyway:
     locations: "classpath:db/migration,classpath:db/testdata"
 
+  mail:
+    host: email-smtp.us-east-1.amazonaws.com
+    port: 587
+    username: ${SMTP_EMAIL_USUARIO}
+    password: ${SMTP_EMAIL_SENHA}
+  freemarker:
+    template-loader-path: classpath:/templates/
+    content-type: text/html
+    charset: UTF-8
+    settings:
+      locale: pt_BR
+
 algafood:
+  email:
+    impl: fake
+    remetente: AlgaFood <marcosf_alves@outlook.com>
+    sandbox:
+      destinatario: marquinhofalves@gmail.com
+
   storage:
     tipo: s3
     local:
