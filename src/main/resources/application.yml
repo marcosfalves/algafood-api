@@ -41,7 +41,7 @@ spring:
 
 algafood:
   email:
-    impl: sandbox
+    impl: fake
     remetente: AlgaFood <marcosf_alves@outlook.com>
     sandbox:
       destinatario: marquinhofalves@gmail.com
