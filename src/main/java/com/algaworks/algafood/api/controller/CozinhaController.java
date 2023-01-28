@@ -13,7 +13,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,8 +27,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/cozinhas",
-        produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping("/cozinhas")
 public class CozinhaController {
 
     @Autowired
@@ -55,14 +53,14 @@ public class CozinhaController {
         return cozinhasModelPage;
     }
 
-    @GetMapping(path = "/{cozinhaId}")
+    @GetMapping("/{cozinhaId}")
     public CozinhaModel buscar(@PathVariable Long cozinhaId) {
         Cozinha cozinha = cadastroCozinha.buscarOuFalhar(cozinhaId);
 
         return cozinhaModelAssembler.toModel(cozinha);
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CozinhaModel adicionar(@RequestBody @Valid CozinhaInput cozinhaInput) {
         Cozinha cozinha = cozinhaInputDisassembler.toDomainObject(cozinhaInput);
@@ -72,7 +70,7 @@ public class CozinhaController {
         return cozinhaModelAssembler.toModel(cozinha);
     }
 
-    @PutMapping(path = "/{cozinhaId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping("/{cozinhaId}")
     public CozinhaModel atualizar(@PathVariable Long cozinhaId,
                                   @RequestBody @Valid CozinhaInput cozinhaInput) {
         Cozinha cozinhaAtual = cadastroCozinha.buscarOuFalhar(cozinhaId);
@@ -84,7 +82,7 @@ public class CozinhaController {
         return cozinhaModelAssembler.toModel(cozinhaAtual);
     }
 
-    @DeleteMapping(path = "/{cozinhaId}")
+    @DeleteMapping("/{cozinhaId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void remover(@PathVariable Long cozinhaId) {
         cadastroCozinha.excluir(cozinhaId);
