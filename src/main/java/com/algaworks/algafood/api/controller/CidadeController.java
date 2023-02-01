@@ -11,6 +11,7 @@ import com.algaworks.algafood.domain.repository.CidadeRepository;
 import com.algaworks.algafood.domain.service.CadastroCidadeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -52,7 +53,8 @@ public class CidadeController {
 
     @ApiOperation("Busca uma cidade por ID")
     @GetMapping("/{cidadeId}")
-    public CidadeModel buscar(@PathVariable Long cidadeId){
+    public CidadeModel buscar(@ApiParam("ID de uma cidade")
+                              @PathVariable Long cidadeId) {
         Cidade cidade = cadastroCidade.buscarOuFalhar(cidadeId);
 
         return cidadeModelAssembler.toModel(cidade);
@@ -75,8 +77,10 @@ public class CidadeController {
 
     @ApiOperation("Atualiza uma cidade por ID")
     @PutMapping("/{cidadeId}")
-    public CidadeModel atualizar(@PathVariable Long cidadeId,
-                            @RequestBody @Valid CidadeInput cidadeInput) {
+    public CidadeModel atualizar(@ApiParam("ID de uma cidade")
+                                 @PathVariable Long cidadeId,
+
+                                 @RequestBody @Valid CidadeInput cidadeInput) {
         try {
             Cidade cidadeAtual = cadastroCidade.buscarOuFalhar(cidadeId);
 
@@ -93,7 +97,8 @@ public class CidadeController {
     @ApiOperation("Exclui uma cidade por ID")
     @DeleteMapping("{cidadeId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void remover(@PathVariable Long cidadeId) {
+    public void remover(@ApiParam("ID de uma cidade")
+                        @PathVariable Long cidadeId) {
         cadastroCidade.excluir(cidadeId);
     }
 }
