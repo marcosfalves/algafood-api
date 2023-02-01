@@ -33,9 +33,9 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
-        List<HttpMessageConverter<?>> convertersXML = converters.stream()
-                        .filter(c -> c instanceof MappingJackson2XmlHttpMessageConverter)
-                        .collect(Collectors.toList());
+        var convertersXML = converters.stream()
+                .filter(c -> c instanceof MappingJackson2XmlHttpMessageConverter)
+                .collect(Collectors.toList());
 
         converters.removeAll(convertersXML);
     }
