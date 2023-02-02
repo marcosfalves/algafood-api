@@ -8,8 +8,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.RepresentationBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.builders.ResponseBuilder;
 import springfox.documentation.service.ApiInfo;
@@ -24,6 +26,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @Configuration
@@ -101,6 +104,12 @@ public class SpringFoxConfig {
                 ));
     }
 
+    private Consumer<RepresentationBuilder> getProblemModelReference() {
+        return r -> r.model(m -> m.name("Problema")
+                .referenceModel(ref -> ref.key(k -> k.qualifiedModelName(
+                        q -> q.name("Problema").namespace("com.algaworks.algafood.api.exceptionhandler")))));
+    }
+
     private List<Response> buildResponseMessagesHttpStatusAccepted(List<HttpStatus> httpStatusAccepted) {
         Map<HttpStatus, String> messages = new HashMap<>();
         messages.put(HttpStatus.INTERNAL_SERVER_ERROR, "Erro interno no servidor");
@@ -109,11 +118,29 @@ public class SpringFoxConfig {
         messages.put(HttpStatus.NOT_ACCEPTABLE, "Recurso não possui representação que poderia ser aceita pelo consumidor");
         messages.put(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "Requisição recusada porque o corpo está em um formato não suportado");
 
+        List<HttpStatus> httpStatusProblemResponse = Arrays.asList(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                HttpStatus.BAD_REQUEST,
+                HttpStatus.NOT_FOUND,
+                HttpStatus.UNSUPPORTED_MEDIA_TYPE
+        );
+
         return httpStatusAccepted.stream()
-                .map(httpStatus -> new ResponseBuilder()
-                        .code(String.valueOf(httpStatus.value()))
-                        .description(messages.get(httpStatus))
-                        .build())
+                .map(httpStatus -> {
+                    if (httpStatusProblemResponse.contains(httpStatus)) {
+                        return new ResponseBuilder()
+                                .code(String.valueOf(httpStatus.value()))
+                                .description(messages.get(httpStatus))
+                                .representation(MediaType.APPLICATION_JSON)
+                                .apply(getProblemModelReference())
+                                .build();
+                    } else {
+                        return new ResponseBuilder()
+                                .code(String.valueOf(httpStatus.value()))
+                                .description(messages.get(httpStatus))
+                                .build();
+                    }
+                })
                 .collect(Collectors.toList());
     }
 }
