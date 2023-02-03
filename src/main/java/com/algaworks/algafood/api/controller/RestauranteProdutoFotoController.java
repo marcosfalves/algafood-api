@@ -31,7 +31,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/restaurantes/{restauranteId}/produtos/{produtoId}/foto")
+@RequestMapping(path = "/restaurantes/{restauranteId}/produtos/{produtoId}/foto")
 public class RestauranteProdutoFotoController {
 
     @Autowired
