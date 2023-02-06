@@ -14,6 +14,8 @@ spring:
     url: "jdbc:mysql://localhost:3306/algafood?createDatabaseIfNotExist=true&serverTimezone=UTC"
     username: root
     password: 1234
+    hikari:
+      max-lifetime: 900000
   jackson:
     deserialization:
       fail-on-unknown-properties: true
