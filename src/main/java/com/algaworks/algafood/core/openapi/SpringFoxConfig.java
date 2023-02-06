@@ -1,12 +1,16 @@
 package com.algaworks.algafood.core.openapi;
 
 import com.algaworks.algafood.api.exceptionhandler.Problem;
+import com.algaworks.algafood.api.model.CozinhaModel;
+import com.algaworks.algafood.api.model.PedidoResumoModel;
 import com.algaworks.algafood.api.openapi.model.PageableModelOpenApi;
+import com.algaworks.algafood.api.openapi.model.PagedModelOpenApi;
 import com.fasterxml.classmate.TypeResolver;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -16,6 +20,8 @@ import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.RepresentationBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.builders.ResponseBuilder;
+import springfox.documentation.schema.AlternateTypeRule;
+import springfox.documentation.schema.AlternateTypeRules;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
 import springfox.documentation.service.Response;
@@ -35,9 +41,11 @@ import java.util.stream.Collectors;
 @Import(BeanValidatorPluginsConfiguration.class)
 public class SpringFoxConfig {
 
+    private TypeResolver typeResolver = new TypeResolver();
+
     @Bean
     public Docket apiDocket() {
-        var typeResolver = new TypeResolver();
+
 
         return new Docket(DocumentationType.OAS_30)
                 .select()
@@ -51,6 +59,9 @@ public class SpringFoxConfig {
                 .globalResponses(HttpMethod.DELETE, globalDeleteResponseMessages())
                 .additionalModels(typeResolver.resolve(Problem.class))
                 .directModelSubstitute(Pageable.class, PageableModelOpenApi.class)
+                .alternateTypeRules(
+                        buildPageTypeRole(CozinhaModel.class),
+                        buildPageTypeRole(PedidoResumoModel.class))
                 .apiInfo(apiInfo())
                 .tags(new Tag("Cidades", "Gerencia as Cidades"),
                         new Tag("Grupos", "Gerencia os grupos de usuários"));
@@ -59,6 +70,13 @@ public class SpringFoxConfig {
     @Bean
     public JacksonModuleRegistrar springFoxJacksonConfig() {
         return objectMapper -> objectMapper.registerModule(new JavaTimeModule());
+    }
+
+    private <T> AlternateTypeRule buildPageTypeRole(Class<T> classModel) {
+        return AlternateTypeRules.newRule(
+                typeResolver.resolve(Page.class, classModel),
+                typeResolver.resolve(PagedModelOpenApi.class, classModel)
+        );
     }
 
     private ApiInfo apiInfo() {
