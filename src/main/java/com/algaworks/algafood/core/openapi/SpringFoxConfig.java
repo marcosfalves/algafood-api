@@ -64,7 +64,8 @@ public class SpringFoxConfig {
                         buildPageTypeRole(PedidoResumoModel.class))
                 .apiInfo(apiInfo())
                 .tags(new Tag("Cidades", "Gerencia as Cidades"),
-                        new Tag("Grupos", "Gerencia os grupos de usuários"));
+                        new Tag("Grupos", "Gerencia os grupos de usuários"),
+                        new Tag("Cozinhas", "Gerencia as cozinhas"));
     }
 
     @Bean
