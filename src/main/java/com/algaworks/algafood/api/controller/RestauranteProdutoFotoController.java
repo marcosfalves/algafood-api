@@ -3,6 +3,7 @@ package com.algaworks.algafood.api.controller;
 import com.algaworks.algafood.api.assembler.FotoProdutoModelAssembler;
 import com.algaworks.algafood.api.model.FotoProdutoModel;
 import com.algaworks.algafood.api.model.input.FotoProdutoInput;
+import com.algaworks.algafood.api.openapi.controller.RestauranteProdutoFotoControllerOpenApi;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.model.FotoProduto;
 import com.algaworks.algafood.domain.model.Produto;
@@ -31,8 +32,9 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/restaurantes/{restauranteId}/produtos/{produtoId}/foto")
-public class RestauranteProdutoFotoController {
+@RequestMapping(path = "/restaurantes/{restauranteId}/produtos/{produtoId}/foto",
+        produces = MediaType.APPLICATION_JSON_VALUE)
+public class RestauranteProdutoFotoController implements RestauranteProdutoFotoControllerOpenApi {
 
     @Autowired
     private CatalogoFotoProdutoService catalogoFotoProduto;
@@ -46,19 +48,16 @@ public class RestauranteProdutoFotoController {
     @Autowired
     private FotoProdutoModelAssembler fotoProdutoModelAssembler;
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public FotoProdutoModel buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
-        FotoProduto fotoProduto = catalogoFotoProduto.buscarOuFalhar(restauranteId, produtoId);
-
-        return fotoProdutoModelAssembler.toModel(fotoProduto);
-    }
-
-    @GetMapping
-    public ResponseEntity<?> servir(@PathVariable Long restauranteId, @PathVariable Long produtoId,
+    @GetMapping(produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<?> buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId,
                                     @RequestHeader(name = "accept") String acceptHeader)
             throws HttpMediaTypeNotAcceptableException {
         try {
             FotoProduto fotoProduto = catalogoFotoProduto.buscarOuFalhar(restauranteId, produtoId);
+
+            if (acceptHeader.equals(MediaType.APPLICATION_JSON_VALUE)) {
+                return ResponseEntity.ok(fotoProdutoModelAssembler.toModel(fotoProduto));
+            }
 
             MediaType mediaTypeFoto = MediaType.parseMediaType(fotoProduto.getContentType());
             List<MediaType> mediaTypesAceitas = MediaType.parseMediaTypes(acceptHeader);
