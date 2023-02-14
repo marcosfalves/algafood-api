@@ -1,11 +1,13 @@
 package com.algaworks.algafood.api.controller;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+
 import com.algaworks.algafood.api.ResourceUriHelper;
 import com.algaworks.algafood.api.assembler.CidadeInputDisassembler;
 import com.algaworks.algafood.api.assembler.CidadeModelAssembler;
-import com.algaworks.algafood.api.openapi.controller.CidadeControllerOpenApi;
 import com.algaworks.algafood.api.model.CidadeModel;
 import com.algaworks.algafood.api.model.input.CidadeInput;
+import com.algaworks.algafood.api.openapi.controller.CidadeControllerOpenApi;
 import com.algaworks.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Cidade;
@@ -13,8 +15,6 @@ import com.algaworks.algafood.domain.repository.CidadeRepository;
 import com.algaworks.algafood.domain.service.CadastroCidadeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.IanaLinkRelations;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.LinkRelation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -58,10 +58,16 @@ public class CidadeController implements CidadeControllerOpenApi {
 
         CidadeModel cidadeModel = cidadeModelAssembler.toModel(cidade);
 
-        cidadeModel.add(Link.of("http://api.algafood.local:8081/cidades/1"));
-        cidadeModel.add(Link.of("http://api.algafood.local:8081/cidades", IanaLinkRelations.COLLECTION));
+        cidadeModel.add(linkTo(CidadeController.class)
+                .slash(cidadeModel.getId())
+                .withSelfRel());
 
-        cidadeModel.getEstado().add(Link.of("http://api.algafood.local:8081/estados/1"));
+        cidadeModel.add(linkTo(CidadeController.class)
+                .withRel(IanaLinkRelations.COLLECTION));
+
+        cidadeModel.getEstado().add(linkTo(EstadoController.class)
+                .slash(cidadeModel.getEstado().getId())
+                .withSelfRel());
 
         return cidadeModel;
     }
