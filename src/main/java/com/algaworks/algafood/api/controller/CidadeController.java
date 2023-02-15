@@ -1,8 +1,5 @@
 package com.algaworks.algafood.api.controller;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 import com.algaworks.algafood.api.ResourceUriHelper;
 import com.algaworks.algafood.api.assembler.CidadeInputDisassembler;
 import com.algaworks.algafood.api.assembler.CidadeModelAssembler;
@@ -16,7 +13,6 @@ import com.algaworks.algafood.domain.repository.CidadeRepository;
 import com.algaworks.algafood.domain.service.CadastroCidadeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -51,50 +47,14 @@ public class CidadeController implements CidadeControllerOpenApi {
     public CollectionModel<CidadeModel> listar() {
         List<Cidade> todasCidades = cidadeRepository.findAll();
 
-        var cidadesModel = cidadeModelAssembler.toCollectionModel(todasCidades);
-        var cidadesCollectionModel = CollectionModel.of(cidadesModel);
-
-        cidadesModel.forEach(cidadeModel -> {
-            cidadeModel.add(
-                    linkTo(methodOn(CidadeController.class).buscar(cidadeModel.getId()))
-                            .withSelfRel());
-
-            cidadeModel.add(
-                    linkTo(methodOn(CidadeController.class).listar())
-                            .withRel(IanaLinkRelations.COLLECTION));
-
-            cidadeModel.getEstado().add(
-                    linkTo(methodOn(EstadoController.class).buscar(cidadeModel.getEstado().getId()))
-                            .withSelfRel());
-        });
-
-        cidadesCollectionModel.add(
-                linkTo(methodOn(CidadeController.class).listar())
-                        .withSelfRel()
-        );
-
-        return cidadesCollectionModel;
+        return cidadeModelAssembler.toCollectionModel(todasCidades);
     }
 
     @GetMapping("/{cidadeId}")
     public CidadeModel buscar(@PathVariable Long cidadeId) {
         Cidade cidade = cadastroCidade.buscarOuFalhar(cidadeId);
 
-        CidadeModel cidadeModel = cidadeModelAssembler.toModel(cidade);
-
-        cidadeModel.add(
-                linkTo(methodOn(CidadeController.class).buscar(cidadeModel.getId()))
-                        .withSelfRel());
-
-        cidadeModel.add(
-                linkTo(methodOn(CidadeController.class).listar())
-                        .withRel(IanaLinkRelations.COLLECTION));
-
-        cidadeModel.getEstado().add(
-                linkTo(methodOn(EstadoController.class).buscar(cidadeModel.getEstado().getId()))
-                        .withSelfRel());
-
-        return cidadeModel;
+        return cidadeModelAssembler.toModel(cidade);
     }
 
     @PostMapping
