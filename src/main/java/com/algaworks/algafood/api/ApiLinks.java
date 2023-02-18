@@ -150,6 +150,13 @@ public class ApiLinks {
         ).withRel(relation);
     }
 
+    public Link linkToRestauranteFormaPagamentoDesassociacao(
+            Long restauranteId, Long formaPagamentoId, String relation) {
+        return linkTo(
+                methodOn(RestauranteFormaPagamentoController.class).desassociarFormaPagamento(restauranteId, formaPagamentoId)
+        ).withRel(relation);
+    }
+
     public Link linkToRestauranteResponsaveis(Long restauranteId, String relation) {
         return linkTo(
                 methodOn(RestauranteUsuarioResponsavelController.class).listar(restauranteId)
