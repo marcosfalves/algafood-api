@@ -9,6 +9,7 @@ import com.algaworks.algafood.api.controller.PedidoController;
 import com.algaworks.algafood.api.controller.RestauranteController;
 import com.algaworks.algafood.api.controller.RestauranteFormaPagamentoController;
 import com.algaworks.algafood.api.controller.RestauranteProdutoController;
+import com.algaworks.algafood.api.controller.RestauranteProdutoFotoController;
 import com.algaworks.algafood.api.controller.RestauranteUsuarioResponsavelController;
 import com.algaworks.algafood.api.controller.UsuarioController;
 import com.algaworks.algafood.api.controller.UsuarioGrupoController;
@@ -19,6 +20,7 @@ import org.springframework.hateoas.TemplateVariable.VariableType;
 import org.springframework.hateoas.TemplateVariables;
 import org.springframework.hateoas.UriTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -209,6 +211,20 @@ public class ApiLinks {
         return linkTo(
                 methodOn(RestauranteProdutoController.class).listar(restauranteId, null)
         ).withRel(relation);
+    }
+
+    public Link linkToFotoProduto(Long restauranteId, Long produtoId, String relation) {
+        try {
+            return linkTo(
+                    methodOn(RestauranteProdutoFotoController.class).buscar(restauranteId, produtoId, null)
+            ).withRel(relation);
+        } catch (HttpMediaTypeNotAcceptableException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Link linkToFotoProduto(Long restauranteId, Long produtoId) {
+        return linkToFotoProduto(restauranteId, produtoId, IanaLinkRelations.SELF.value());
     }
 
     public Link linkToProdutos(Long restauranteId) {

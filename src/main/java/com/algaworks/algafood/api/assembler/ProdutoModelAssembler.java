@@ -25,12 +25,18 @@ public class ProdutoModelAssembler extends RepresentationModelAssemblerSupport<P
 
     @Override
     public ProdutoModel toModel(Produto produto) {
+        var restauranteId = produto.getRestaurante().getId();
+
         var produtoModel = createModelWithId(
-                produto.getId(), produto, produto.getRestaurante().getId());
+                produto.getId(), produto, restauranteId);
         modelMapper.map(produto, produtoModel);
 
         produtoModel.add(
-                apiLinks.linkToProdutos(produto.getRestaurante().getId(), IanaLinkRelations.COLLECTION.value()));
+                apiLinks.linkToProdutos(restauranteId, IanaLinkRelations.COLLECTION.value()));
+
+        produtoModel.add(
+                apiLinks.linkToFotoProduto(restauranteId, produto.getId(), "foto")
+        );
 
         return produtoModel;
     }
