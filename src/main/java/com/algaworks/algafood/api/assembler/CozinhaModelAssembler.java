@@ -1,5 +1,6 @@
 package com.algaworks.algafood.api.assembler;
 
+import com.algaworks.algafood.api.ApiLinks;
 import com.algaworks.algafood.api.controller.CozinhaController;
 import com.algaworks.algafood.api.model.CozinhaModel;
 import com.algaworks.algafood.domain.model.Cozinha;
@@ -9,13 +10,14 @@ import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-
 @Component
 public class CozinhaModelAssembler extends RepresentationModelAssemblerSupport<Cozinha, CozinhaModel> {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private ApiLinks apiLinks;
 
     public CozinhaModelAssembler() {
         super(CozinhaController.class, CozinhaModel.class);
@@ -26,7 +28,7 @@ public class CozinhaModelAssembler extends RepresentationModelAssemblerSupport<C
         var cozinhaModel = createModelWithId(cozinha.getId(), cozinha);
         modelMapper.map(cozinha, cozinhaModel);
 
-        cozinhaModel.add(linkTo(CozinhaController.class).withRel(IanaLinkRelations.COLLECTION));
+        cozinhaModel.add(apiLinks.linkToCozinhas(IanaLinkRelations.COLLECTION.value()));
 
         return cozinhaModel;
     }
