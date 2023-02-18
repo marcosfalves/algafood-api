@@ -205,6 +205,16 @@ public class ApiLinks {
         return linkToFormasPagamento(IanaLinkRelations.SELF.value());
     }
 
+    public Link linkToProdutos(Long restauranteId, String relation) {
+        return linkTo(
+                methodOn(RestauranteProdutoController.class).listar(restauranteId, null)
+        ).withRel(relation);
+    }
+
+    public Link linkToProdutos(Long restauranteId) {
+        return linkToProdutos(restauranteId, IanaLinkRelations.SELF.value());
+    }
+
     public Link linkToCidade(Long cidadeId, String relation) {
         return linkTo(
                 methodOn(CidadeController.class).buscar(cidadeId)

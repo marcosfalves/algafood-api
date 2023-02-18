@@ -1,5 +1,6 @@
 package com.algaworks.algafood.api.controller;
 
+import com.algaworks.algafood.api.ApiLinks;
 import com.algaworks.algafood.api.assembler.ProdutoInputDisassembler;
 import com.algaworks.algafood.api.assembler.ProdutoModelAssembler;
 import com.algaworks.algafood.api.model.ProdutoModel;
@@ -11,6 +12,7 @@ import com.algaworks.algafood.domain.repository.ProdutoRepository;
 import com.algaworks.algafood.domain.service.CadastroProdutoService;
 import com.algaworks.algafood.domain.service.CadastroRestauranteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,19 +47,23 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
     @Autowired
     private ProdutoInputDisassembler produtoInputDisassembler;
 
+    @Autowired
+    private ApiLinks apiLinks;
+
     @GetMapping
-    public List<ProdutoModel> listar(@PathVariable Long restauranteId,
-                                     @RequestParam(required = false) boolean incluirInativos) {
+    public CollectionModel<ProdutoModel> listar(@PathVariable Long restauranteId,
+                                                @RequestParam(required = false, defaultValue = "false") Boolean incluirInativos) {
         Restaurante restaurante = cadastroRestaurante.buscarOuFalhar(restauranteId);
 
         List<Produto> produtosRestaurante;
-        if (incluirInativos){
+        if (incluirInativos) {
             produtosRestaurante = produtoRepository.findTodosByRestaurante(restaurante);
         } else {
             produtosRestaurante = produtoRepository.findAtivosByRestaurante(restaurante);
         }
 
-        return produtoModelAssembler.toCollectionModel(produtosRestaurante);
+        return produtoModelAssembler.toCollectionModel(produtosRestaurante)
+                .add(apiLinks.linkToProdutos(restauranteId));
     }
 
     @GetMapping("/{produtoId}")

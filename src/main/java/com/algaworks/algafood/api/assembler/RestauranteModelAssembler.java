@@ -32,10 +32,15 @@ public class RestauranteModelAssembler
         restauranteModel.add(
                 apiLinks.linkToRestaurantes(IanaLinkRelations.COLLECTION.value()));
 
+        restauranteModel.add(
+                apiLinks.linkToProdutos(restaurante.getId(), "produtos")
+        );
+
         restauranteModel.getCozinha().add(
                 apiLinks.linkToCozinha(restaurante.getCozinha().getId()));
 
-        if (restauranteModel.getEndereco() != null) {
+        if (restauranteModel.getEndereco() != null
+                && restauranteModel.getEndereco().getCidade() != null) {
             restauranteModel.getEndereco().getCidade().add(
                     apiLinks.linkToCidade(restaurante.getEndereco().getCidade().getId()));
         }
