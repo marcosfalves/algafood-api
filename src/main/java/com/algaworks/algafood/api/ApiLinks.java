@@ -159,7 +159,7 @@ public class ApiLinks {
 
     public Link linkToRestauranteFormaPagamentoAssociacao(Long restauranteId, String relation) {
         return linkTo(
-                methodOn(RestauranteFormaPagamentoController.class).desassociarFormaPagamento(restauranteId, null)
+                methodOn(RestauranteFormaPagamentoController.class).associarFormaPagamento(restauranteId, null)
         ).withRel(relation);
     }
 
@@ -171,6 +171,18 @@ public class ApiLinks {
 
     public Link linkToRestauranteResponsaveis(Long restauranteId) {
         return linkToRestauranteResponsaveis(restauranteId, IanaLinkRelations.SELF.value());
+    }
+
+    public Link linkToRestauranteResponsavelDesassociacao(Long restauranteId, Long usuarioId, String relation) {
+        return linkTo(
+                methodOn(RestauranteUsuarioResponsavelController.class).desassociarUsuario(restauranteId, usuarioId)
+        ).withRel(relation);
+    }
+
+    public Link linkToRestauranteResponsavelAssociacao(Long restauranteId, String relation) {
+        return linkTo(
+                methodOn(RestauranteUsuarioResponsavelController.class).associarUsuario(restauranteId, null)
+        ).withRel(relation);
     }
 
     public Link linkToFormaPagamento(Long formaPagamentoId, String relation) {
