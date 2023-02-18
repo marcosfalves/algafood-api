@@ -89,6 +89,38 @@ public class Restaurante {
         this.aberto = false;
     }
 
+    public boolean isAberto() {
+        return this.aberto;
+    }
+
+    public boolean isFechado() {
+        return !isAberto();
+    }
+
+    public boolean isAtivo() {
+        return this.ativo;
+    }
+
+    public boolean isInativo() {
+        return !isAtivo();
+    }
+
+    public boolean aberturaPermitida() {
+        return isAtivo() && isFechado();
+    }
+
+    public boolean ativacaoPermitida() {
+        return isInativo();
+    }
+
+    public boolean inativacaoPermitida() {
+        return isAtivo();
+    }
+
+    public boolean fechamentoPermitido() {
+        return isAberto();
+    }
+
     public boolean adicionarFormaPagamento(FormaPagamento formaPagamento){
         return this.formasPagamento.add(formaPagamento);
     }

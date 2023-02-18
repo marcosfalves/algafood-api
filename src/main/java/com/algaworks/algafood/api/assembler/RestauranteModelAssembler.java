@@ -46,6 +46,26 @@ public class RestauranteModelAssembler
         restauranteModel.add(
                 apiLinks.linkToRestauranteResponsaveis(restaurante.getId(), "responsaveis"));
 
+        if (restaurante.ativacaoPermitida()) {
+            restauranteModel.add(
+                    apiLinks.linkToRestauranteAtivacao(restaurante.getId(), "ativar"));
+        }
+
+        if (restaurante.inativacaoPermitida()) {
+            restauranteModel.add(
+                    apiLinks.linkToRestauranteInativacao(restaurante.getId(), "inativar"));
+        }
+
+        if (restaurante.aberturaPermitida()) {
+            restauranteModel.add(
+                    apiLinks.linkToRestauranteAbertura(restaurante.getId(), "abrir"));
+        }
+
+        if (restaurante.fechamentoPermitido()) {
+            restauranteModel.add(
+                    apiLinks.linkToRestauranteFechamento(restaurante.getId(), "fechar"));
+        }
+
         return restauranteModel;
     }
 
