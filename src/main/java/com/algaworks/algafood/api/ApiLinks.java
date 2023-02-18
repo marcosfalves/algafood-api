@@ -7,6 +7,7 @@ import com.algaworks.algafood.api.controller.FluxoPedidoController;
 import com.algaworks.algafood.api.controller.FormaPagamentoController;
 import com.algaworks.algafood.api.controller.PedidoController;
 import com.algaworks.algafood.api.controller.RestauranteController;
+import com.algaworks.algafood.api.controller.RestauranteFormaPagamentoController;
 import com.algaworks.algafood.api.controller.RestauranteProdutoController;
 import com.algaworks.algafood.api.controller.RestauranteUsuarioResponsavelController;
 import com.algaworks.algafood.api.controller.UsuarioController;
@@ -73,6 +74,14 @@ public class ApiLinks {
         return linkToRestaurante(restauranteId, IanaLinkRelations.SELF.value());
     }
 
+    public Link linkToRestaurantes(String relation) {
+        return linkTo(RestauranteController.class).withRel(relation);
+    }
+
+    public Link linkToRestaurantes() {
+        return linkToRestaurantes(IanaLinkRelations.SELF.value());
+    }
+
     public Link linkToUsuario(Long usuarioId, String relation) {
         return linkTo(
                 methodOn(UsuarioController.class).buscar(usuarioId)
@@ -101,14 +110,24 @@ public class ApiLinks {
         return linkToGruposUsuario(usuarioId, IanaLinkRelations.SELF.value());
     }
 
-    public Link linkToResponsaveisRestaurante(Long restauranteId, String relation) {
+    public Link linkToRestauranteFormasPagamento(Long restauranteId) {
+        return linkToRestauranteFormasPagamento(restauranteId, IanaLinkRelations.SELF.value());
+    }
+
+    public Link linkToRestauranteFormasPagamento(Long restauranteId, String relation) {
+        return linkTo(
+                methodOn(RestauranteFormaPagamentoController.class).listar(restauranteId)
+        ).withRel(relation);
+    }
+
+    public Link linkToRestauranteResponsaveis(Long restauranteId, String relation) {
         return linkTo(
                 methodOn(RestauranteUsuarioResponsavelController.class).listar(restauranteId)
         ).withRel(relation);
     }
 
-    public Link linkToResponsaveisRestaurante(Long restauranteId) {
-        return linkToResponsaveisRestaurante(restauranteId, IanaLinkRelations.SELF.value());
+    public Link linkToRestauranteResponsaveis(Long restauranteId) {
+        return linkToRestauranteResponsaveis(restauranteId, IanaLinkRelations.SELF.value());
     }
 
     public Link linkToFormaPagamento(Long formaPagamentoId, String relation) {

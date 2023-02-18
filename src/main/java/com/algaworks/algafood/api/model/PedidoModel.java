@@ -38,7 +38,7 @@ public class PedidoModel extends RepresentationModel<PedidoModel> {
     @ApiModelProperty(example = "2023-02-07T09:50:07Z")
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     private OffsetDateTime dataCancelamento;
-    private RestauranteResumoModel restaurante;
+    private RestauranteApenasNomeModel restaurante;
     private UsuarioModel cliente;
     private FormaPagamentoModel formaPagamento;
     private EnderecoModel enderecoEntrega;

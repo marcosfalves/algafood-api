@@ -28,6 +28,6 @@ public class PedidoResumoModel extends RepresentationModel<PedidoResumoModel> {
     @ApiModelProperty(example = "2023-02-07T09:50:07Z")
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     private OffsetDateTime dataCriacao;
-    private RestauranteResumoModel restaurante;
+    private RestauranteApenasNomeModel restaurante;
     private UsuarioModel cliente;
 }
