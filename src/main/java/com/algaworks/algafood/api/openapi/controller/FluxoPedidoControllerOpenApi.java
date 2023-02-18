@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 
 @Api(tags = "Pedidos")
 public interface FluxoPedidoControllerOpenApi {
@@ -19,7 +20,7 @@ public interface FluxoPedidoControllerOpenApi {
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 
     })
-    void confirmar(@ApiParam(value = "Código do pedido", example = "b5741512-8fbc-47fa-9ac1-b530354fc0ff") String codigoPedido);
+    ResponseEntity<Void> confirmar(@ApiParam(value = "Código do pedido", example = "b5741512-8fbc-47fa-9ac1-b530354fc0ff") String codigoPedido);
 
     @ApiOperation("Registrar entrega de pedido")
     @ApiResponses({
@@ -28,7 +29,7 @@ public interface FluxoPedidoControllerOpenApi {
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 
     })
-    void entregar(@ApiParam(value = "Código do pedido", example = "b5741512-8fbc-47fa-9ac1-b530354fc0ff") String codigoPedido);
+    ResponseEntity<Void> entregar(@ApiParam(value = "Código do pedido", example = "b5741512-8fbc-47fa-9ac1-b530354fc0ff") String codigoPedido);
 
     @ApiOperation("Cancelamento de pedido")
     @ApiResponses({
@@ -37,5 +38,5 @@ public interface FluxoPedidoControllerOpenApi {
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 
     })
-    void cancelar(@ApiParam(value = "Código do pedido", example = "b5741512-8fbc-47fa-9ac1-b530354fc0ff") String codigoPedido);
+    ResponseEntity<Void> cancelar(@ApiParam(value = "Código do pedido", example = "b5741512-8fbc-47fa-9ac1-b530354fc0ff") String codigoPedido);
 }
