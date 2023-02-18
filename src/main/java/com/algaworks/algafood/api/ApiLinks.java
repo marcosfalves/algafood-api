@@ -183,6 +183,18 @@ public class ApiLinks {
         return linkToGruposUsuario(usuarioId, IanaLinkRelations.SELF.value());
     }
 
+    public Link linkToUsuarioGrupoAssociacao(Long usuarioId, String relation) {
+        return linkTo(
+                methodOn(UsuarioGrupoController.class).associarGrupo(usuarioId, null)
+        ).withRel(relation);
+    }
+
+    public Link linkToUsuarioGrupoDesassociacao(Long usuarioId, Long grupoId, String relation) {
+        return linkTo(
+                methodOn(UsuarioGrupoController.class).desassociarGrupo(usuarioId, grupoId)
+        ).withRel(relation);
+    }
+
     public Link linkToRestauranteFormasPagamento(Long restauranteId) {
         return linkToRestauranteFormasPagamento(restauranteId, IanaLinkRelations.SELF.value());
     }
