@@ -38,7 +38,8 @@ public class RestauranteFormaPagamentoController implements RestauranteFormaPaga
 
          var formasPagamentoModel = formaPagamentoModelAssembler.toCollectionModel(restaurante.getFormasPagamento())
                  .removeLinks()
-                 .add(apiLinks.linkToRestauranteFormasPagamento(restauranteId));
+                 .add(apiLinks.linkToRestauranteFormasPagamento(restauranteId))
+                 .add(apiLinks.linkToRestauranteFormaPagamentoAssociacao(restauranteId, "associar"));
 
          formasPagamentoModel.getContent().forEach(formaPagamentoModel -> {
              formaPagamentoModel.add(

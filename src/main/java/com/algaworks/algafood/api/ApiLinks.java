@@ -157,6 +157,12 @@ public class ApiLinks {
         ).withRel(relation);
     }
 
+    public Link linkToRestauranteFormaPagamentoAssociacao(Long restauranteId, String relation) {
+        return linkTo(
+                methodOn(RestauranteFormaPagamentoController.class).desassociarFormaPagamento(restauranteId, null)
+        ).withRel(relation);
+    }
+
     public Link linkToRestauranteResponsaveis(Long restauranteId, String relation) {
         return linkTo(
                 methodOn(RestauranteUsuarioResponsavelController.class).listar(restauranteId)
