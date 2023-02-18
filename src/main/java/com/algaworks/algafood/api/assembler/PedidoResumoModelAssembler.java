@@ -6,6 +6,7 @@ import com.algaworks.algafood.api.model.PedidoResumoModel;
 import com.algaworks.algafood.domain.model.Pedido;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +28,7 @@ public class PedidoResumoModelAssembler extends RepresentationModelAssemblerSupp
         var pedidoResumoModel = createModelWithId(pedido.getCodigo(), pedido);
         modelMapper.map(pedido, pedidoResumoModel);
 
-        pedidoResumoModel.add(apiLinks.linkToPedidos());
+        pedidoResumoModel.add(apiLinks.linkToPedidos(IanaLinkRelations.COLLECTION.value()));
 
         pedidoResumoModel.getRestaurante().add(apiLinks.linkToRestaurante(pedido.getRestaurante().getId()));
 

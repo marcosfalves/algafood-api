@@ -32,9 +32,11 @@ public class ApiLinks {
             new TemplateVariable("sort", VariableType.REQUEST_PARAM)
     );
 
-    public Link linkToPedidos() {
-        String pedidosUrl = linkTo(PedidoController.class).toUri().toString();
+    public static final TemplateVariables PROJECAO_VARIABLES = new TemplateVariables(
+            new TemplateVariable("projecao", VariableType.REQUEST_PARAM)
+    );
 
+    public Link linkToPedidos(String relation) {
         var filtroVariables = new TemplateVariables(
                 new TemplateVariable("clienteId", VariableType.REQUEST_PARAM),
                 new TemplateVariable("restauranteId", VariableType.REQUEST_PARAM),
@@ -42,8 +44,10 @@ public class ApiLinks {
                 new TemplateVariable("dataCriacaoFim", VariableType.REQUEST_PARAM)
         );
 
+        String pedidosUrl = linkTo(PedidoController.class).toUri().toString();
+
         return Link.of(UriTemplate.of(pedidosUrl,
-                PAGINACAO_VARIABLES.concat(filtroVariables)), IanaLinkRelations.COLLECTION);
+                PAGINACAO_VARIABLES.concat(filtroVariables)), relation);
     }
 
     public Link linkToConfirmacaoPedido(String codigoPedido, String relation) {
@@ -75,7 +79,9 @@ public class ApiLinks {
     }
 
     public Link linkToRestaurantes(String relation) {
-        return linkTo(RestauranteController.class).withRel(relation);
+        String restaurantesUrl = linkTo(RestauranteController.class).toUri().toString();
+
+        return Link.of(UriTemplate.of(restaurantesUrl, PROJECAO_VARIABLES), relation);
     }
 
     public Link linkToRestaurantes() {
