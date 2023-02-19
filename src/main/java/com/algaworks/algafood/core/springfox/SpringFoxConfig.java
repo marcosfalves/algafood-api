@@ -4,10 +4,12 @@ import com.algaworks.algafood.api.exceptionhandler.Problem;
 import com.algaworks.algafood.api.model.CidadeModel;
 import com.algaworks.algafood.api.model.CozinhaModel;
 import com.algaworks.algafood.api.model.EstadoModel;
+import com.algaworks.algafood.api.model.FormaPagamentoModel;
 import com.algaworks.algafood.api.model.PedidoResumoModel;
 import com.algaworks.algafood.api.openapi.model.CidadeCollectionModelOpenApi;
 import com.algaworks.algafood.api.openapi.model.CozinhaCollectionModelOpenApi;
 import com.algaworks.algafood.api.openapi.model.EstadoCollectionModelOpenApi;
+import com.algaworks.algafood.api.openapi.model.FormaPagamentoCollectionModelOpenApi;
 import com.algaworks.algafood.api.openapi.model.LinksModelOpenApi;
 import com.algaworks.algafood.api.openapi.model.PageableModelOpenApi;
 import com.algaworks.algafood.api.openapi.model.PagedModelOpenApi;
@@ -75,7 +77,8 @@ public class SpringFoxConfig {
                         buildPageTypeRole(PedidoResumoModel.class),
                         buildPagedModelTypeRole(CozinhaModel.class, CozinhaCollectionModelOpenApi.class),
                         buildCollectionModelTypeRole(CidadeModel.class, CidadeCollectionModelOpenApi.class),
-                        buildCollectionModelTypeRole(EstadoModel.class, EstadoCollectionModelOpenApi.class))
+                        buildCollectionModelTypeRole(EstadoModel.class, EstadoCollectionModelOpenApi.class),
+                        buildCollectionModelTypeRole(FormaPagamentoModel.class, FormaPagamentoCollectionModelOpenApi.class))
                 .apiInfo(apiInfo())
                 .tags(new Tag("Cidades", "Gerencia as Cidades"),
                         new Tag("Grupos", "Gerencia os grupos de usuários"),
