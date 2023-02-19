@@ -28,6 +28,7 @@ public class RootEntryPointController {
         rootEntryPointModel.add(apiLinks.linkToFormasPagamento("formas-pagamento"));
         rootEntryPointModel.add(apiLinks.linkToEstados("estados"));
         rootEntryPointModel.add(apiLinks.linkToCidades("cidades"));
+        rootEntryPointModel.add(apiLinks.linkToEstatisticas("estatisticas"));
 
         return rootEntryPointModel;
     }
