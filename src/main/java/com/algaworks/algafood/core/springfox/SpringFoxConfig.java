@@ -9,6 +9,8 @@ import com.algaworks.algafood.api.model.GrupoModel;
 import com.algaworks.algafood.api.model.PedidoResumoModel;
 import com.algaworks.algafood.api.model.PermissaoModel;
 import com.algaworks.algafood.api.model.ProdutoModel;
+import com.algaworks.algafood.api.model.RestauranteBasicoModel;
+import com.algaworks.algafood.api.model.UsuarioModel;
 import com.algaworks.algafood.api.openapi.model.CidadeCollectionModelOpenApi;
 import com.algaworks.algafood.api.openapi.model.CozinhaCollectionModelOpenApi;
 import com.algaworks.algafood.api.openapi.model.EstadoCollectionModelOpenApi;
@@ -19,6 +21,8 @@ import com.algaworks.algafood.api.openapi.model.PageableModelOpenApi;
 import com.algaworks.algafood.api.openapi.model.PedidoResumoCollectionModelOpenApi;
 import com.algaworks.algafood.api.openapi.model.PermissaoCollectionModelOpenApi;
 import com.algaworks.algafood.api.openapi.model.ProdutoCollectionModelOpenApi;
+import com.algaworks.algafood.api.openapi.model.RestauranteBasicoCollectionModelOpenApi;
+import com.algaworks.algafood.api.openapi.model.UsuarioCollectionModelOpenApi;
 import com.fasterxml.classmate.TypeResolver;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.annotation.Bean;
@@ -86,7 +90,9 @@ public class SpringFoxConfig {
                         buildCollectionModelTypeRole(FormaPagamentoModel.class, FormaPagamentoCollectionModelOpenApi.class),
                         buildCollectionModelTypeRole(GrupoModel.class, GrupoCollectionModelOpenApi.class),
                         buildCollectionModelTypeRole(PermissaoModel.class, PermissaoCollectionModelOpenApi.class),
-                        buildCollectionModelTypeRole(ProdutoModel.class, ProdutoCollectionModelOpenApi.class))
+                        buildCollectionModelTypeRole(ProdutoModel.class, ProdutoCollectionModelOpenApi.class),
+                        buildCollectionModelTypeRole(UsuarioModel.class, UsuarioCollectionModelOpenApi.class),
+                        buildCollectionModelTypeRole(RestauranteBasicoModel.class, RestauranteBasicoCollectionModelOpenApi.class))
                 .apiInfo(apiInfo())
                 .tags(new Tag("Cidades", "Gerencia as Cidades"),
                         new Tag("Grupos", "Gerencia os grupos de usuários"),
