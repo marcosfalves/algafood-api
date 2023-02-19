@@ -5,6 +5,7 @@ import com.algaworks.algafood.api.model.CidadeModel;
 import com.algaworks.algafood.api.model.CozinhaModel;
 import com.algaworks.algafood.api.model.PedidoResumoModel;
 import com.algaworks.algafood.api.openapi.model.CidadeCollectionModelOpenApi;
+import com.algaworks.algafood.api.openapi.model.CozinhaCollectionModelOpenApi;
 import com.algaworks.algafood.api.openapi.model.LinksModelOpenApi;
 import com.algaworks.algafood.api.openapi.model.PageableModelOpenApi;
 import com.algaworks.algafood.api.openapi.model.PagedModelOpenApi;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Links;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -68,8 +70,8 @@ public class SpringFoxConfig {
                 .directModelSubstitute(Pageable.class, PageableModelOpenApi.class)
                 .directModelSubstitute(Links.class, LinksModelOpenApi.class)
                 .alternateTypeRules(
-                        buildPageTypeRole(CozinhaModel.class),
                         buildPageTypeRole(PedidoResumoModel.class),
+                        buildPagedModelTypeRole(CozinhaModel.class, CozinhaCollectionModelOpenApi.class),
                         buildCollectionModelTypeRole(CidadeModel.class, CidadeCollectionModelOpenApi.class))
                 .apiInfo(apiInfo())
                 .tags(new Tag("Cidades", "Gerencia as Cidades"),
@@ -95,6 +97,11 @@ public class SpringFoxConfig {
                 typeResolver.resolve(Page.class, classModel),
                 typeResolver.resolve(PagedModelOpenApi.class, classModel)
         );
+    }
+
+    private <M, P> AlternateTypeRule buildPagedModelTypeRole(Class<M> classModel, Class<P> classPagedModel) {
+        return AlternateTypeRules.newRule(
+                typeResolver.resolve(PagedModel.class, classModel), classPagedModel);
     }
 
     private <M, C> AlternateTypeRule buildCollectionModelTypeRole(Class<M> classModel, Class<C> classCollectionModel) {
