@@ -1,8 +1,10 @@
 package com.algaworks.algafood.core.springfox;
 
 import com.algaworks.algafood.api.exceptionhandler.Problem;
+import com.algaworks.algafood.api.model.CidadeModel;
 import com.algaworks.algafood.api.model.CozinhaModel;
 import com.algaworks.algafood.api.model.PedidoResumoModel;
+import com.algaworks.algafood.api.openapi.model.CidadeCollectionModelOpenApi;
 import com.algaworks.algafood.api.openapi.model.LinksModelOpenApi;
 import com.algaworks.algafood.api.openapi.model.PageableModelOpenApi;
 import com.algaworks.algafood.api.openapi.model.PagedModelOpenApi;
@@ -13,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Links;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -66,7 +69,8 @@ public class SpringFoxConfig {
                 .directModelSubstitute(Links.class, LinksModelOpenApi.class)
                 .alternateTypeRules(
                         buildPageTypeRole(CozinhaModel.class),
-                        buildPageTypeRole(PedidoResumoModel.class))
+                        buildPageTypeRole(PedidoResumoModel.class),
+                        buildCollectionModelTypeRole(CidadeModel.class, CidadeCollectionModelOpenApi.class))
                 .apiInfo(apiInfo())
                 .tags(new Tag("Cidades", "Gerencia as Cidades"),
                         new Tag("Grupos", "Gerencia os grupos de usuários"),
@@ -91,6 +95,11 @@ public class SpringFoxConfig {
                 typeResolver.resolve(Page.class, classModel),
                 typeResolver.resolve(PagedModelOpenApi.class, classModel)
         );
+    }
+
+    private <M, C> AlternateTypeRule buildCollectionModelTypeRole(Class<M> classModel, Class<C> classCollectionModel) {
+        return AlternateTypeRules.newRule(
+                typeResolver.resolve(CollectionModel.class, classModel), classCollectionModel);
     }
 
     private ApiInfo apiInfo() {
