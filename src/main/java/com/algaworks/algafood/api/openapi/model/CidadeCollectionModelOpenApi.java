@@ -11,12 +11,12 @@ import java.util.List;
 @Data
 public class CidadeCollectionModelOpenApi {
 
-    private CidadeEmbeddedModelOpenApi _embedded;
+    private CidadesEmbeddedModelOpenApi _embedded;
     private Links _links;
 
     @ApiModel("CidadesEmbeddedModel")
     @Data
-    public class CidadeEmbeddedModelOpenApi {
+    public class CidadesEmbeddedModelOpenApi {
         private List<CidadeModel> cidades;
     }
 }
