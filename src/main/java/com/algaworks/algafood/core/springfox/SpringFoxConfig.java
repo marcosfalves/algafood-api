@@ -15,14 +15,13 @@ import com.algaworks.algafood.api.openapi.model.FormaPagamentoCollectionModelOpe
 import com.algaworks.algafood.api.openapi.model.GrupoCollectionModelOpenApi;
 import com.algaworks.algafood.api.openapi.model.LinksModelOpenApi;
 import com.algaworks.algafood.api.openapi.model.PageableModelOpenApi;
-import com.algaworks.algafood.api.openapi.model.PagedModelOpenApi;
+import com.algaworks.algafood.api.openapi.model.PedidoResumoCollectionModelOpenApi;
 import com.algaworks.algafood.api.openapi.model.PermissaoCollectionModelOpenApi;
 import com.fasterxml.classmate.TypeResolver;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Links;
@@ -78,7 +77,7 @@ public class SpringFoxConfig {
                 .directModelSubstitute(Pageable.class, PageableModelOpenApi.class)
                 .directModelSubstitute(Links.class, LinksModelOpenApi.class)
                 .alternateTypeRules(
-                        buildPageTypeRole(PedidoResumoModel.class),
+                        buildPagedModelTypeRole(PedidoResumoModel.class, PedidoResumoCollectionModelOpenApi.class),
                         buildPagedModelTypeRole(CozinhaModel.class, CozinhaCollectionModelOpenApi.class),
                         buildCollectionModelTypeRole(CidadeModel.class, CidadeCollectionModelOpenApi.class),
                         buildCollectionModelTypeRole(EstadoModel.class, EstadoCollectionModelOpenApi.class),
@@ -102,13 +101,6 @@ public class SpringFoxConfig {
     @Bean
     public JacksonModuleRegistrar springFoxJacksonConfig() {
         return objectMapper -> objectMapper.registerModule(new JavaTimeModule());
-    }
-
-    private <T> AlternateTypeRule buildPageTypeRole(Class<T> classModel) {
-        return AlternateTypeRules.newRule(
-                typeResolver.resolve(Page.class, classModel),
-                typeResolver.resolve(PagedModelOpenApi.class, classModel)
-        );
     }
 
     private <M, P> AlternateTypeRule buildPagedModelTypeRole(Class<M> classModel, Class<P> classPagedModel) {
