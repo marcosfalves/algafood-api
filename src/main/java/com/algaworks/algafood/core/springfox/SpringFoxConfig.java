@@ -1,28 +1,32 @@
 package com.algaworks.algafood.core.springfox;
 
 import com.algaworks.algafood.api.exceptionhandler.Problem;
-import com.algaworks.algafood.api.model.CidadeModel;
-import com.algaworks.algafood.api.model.CozinhaModel;
-import com.algaworks.algafood.api.model.EstadoModel;
-import com.algaworks.algafood.api.model.FormaPagamentoModel;
-import com.algaworks.algafood.api.model.GrupoModel;
-import com.algaworks.algafood.api.model.PedidoResumoModel;
-import com.algaworks.algafood.api.model.PermissaoModel;
-import com.algaworks.algafood.api.model.ProdutoModel;
-import com.algaworks.algafood.api.model.RestauranteBasicoModel;
-import com.algaworks.algafood.api.model.UsuarioModel;
-import com.algaworks.algafood.api.openapi.model.CidadeCollectionModelOpenApi;
-import com.algaworks.algafood.api.openapi.model.CozinhaCollectionModelOpenApi;
-import com.algaworks.algafood.api.openapi.model.EstadoCollectionModelOpenApi;
-import com.algaworks.algafood.api.openapi.model.FormaPagamentoCollectionModelOpenApi;
-import com.algaworks.algafood.api.openapi.model.GrupoCollectionModelOpenApi;
-import com.algaworks.algafood.api.openapi.model.LinksModelOpenApi;
-import com.algaworks.algafood.api.openapi.model.PageableModelOpenApi;
-import com.algaworks.algafood.api.openapi.model.PedidoResumoCollectionModelOpenApi;
-import com.algaworks.algafood.api.openapi.model.PermissaoCollectionModelOpenApi;
-import com.algaworks.algafood.api.openapi.model.ProdutoCollectionModelOpenApi;
-import com.algaworks.algafood.api.openapi.model.RestauranteBasicoCollectionModelOpenApi;
-import com.algaworks.algafood.api.openapi.model.UsuarioCollectionModelOpenApi;
+import com.algaworks.algafood.api.v1.model.CidadeModel;
+import com.algaworks.algafood.api.v1.model.CozinhaModel;
+import com.algaworks.algafood.api.v1.model.EstadoModel;
+import com.algaworks.algafood.api.v1.model.FormaPagamentoModel;
+import com.algaworks.algafood.api.v1.model.GrupoModel;
+import com.algaworks.algafood.api.v1.model.PedidoResumoModel;
+import com.algaworks.algafood.api.v1.model.PermissaoModel;
+import com.algaworks.algafood.api.v1.model.ProdutoModel;
+import com.algaworks.algafood.api.v1.model.RestauranteBasicoModel;
+import com.algaworks.algafood.api.v1.model.UsuarioModel;
+import com.algaworks.algafood.api.v1.openapi.model.CidadeCollectionModelOpenApi;
+import com.algaworks.algafood.api.v1.openapi.model.CozinhaCollectionModelOpenApi;
+import com.algaworks.algafood.api.v1.openapi.model.EstadoCollectionModelOpenApi;
+import com.algaworks.algafood.api.v1.openapi.model.FormaPagamentoCollectionModelOpenApi;
+import com.algaworks.algafood.api.v1.openapi.model.GrupoCollectionModelOpenApi;
+import com.algaworks.algafood.api.v1.openapi.model.LinksModelOpenApi;
+import com.algaworks.algafood.api.v1.openapi.model.PageableModelOpenApi;
+import com.algaworks.algafood.api.v1.openapi.model.PedidoResumoCollectionModelOpenApi;
+import com.algaworks.algafood.api.v1.openapi.model.PermissaoCollectionModelOpenApi;
+import com.algaworks.algafood.api.v1.openapi.model.ProdutoCollectionModelOpenApi;
+import com.algaworks.algafood.api.v1.openapi.model.RestauranteBasicoCollectionModelOpenApi;
+import com.algaworks.algafood.api.v1.openapi.model.UsuarioCollectionModelOpenApi;
+import com.algaworks.algafood.api.v2.model.CidadeModelV2;
+import com.algaworks.algafood.api.v2.model.CozinhaModelV2;
+import com.algaworks.algafood.api.v2.openapi.model.CidadeCollectionModelV2OpenApi;
+import com.algaworks.algafood.api.v2.openapi.model.CozinhaCollectionModelV2OpenApi;
 import com.fasterxml.classmate.TypeResolver;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.annotation.Bean;
@@ -38,6 +42,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.context.request.ServletWebRequest;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RepresentationBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.builders.ResponseBuilder;
@@ -65,14 +70,14 @@ public class SpringFoxConfig {
     private final TypeResolver typeResolver = new TypeResolver();
 
     @Bean
-    public Docket apiDocket() {
-
+    public Docket apiDocketV1() {
 
         return new Docket(DocumentationType.OAS_30)
+                .groupName("V1")
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.algaworks.algafood.api"))
-                //.paths(PathSelectors.ant("/restaurantes/*"))
-                .build()
+                    .apis(RequestHandlerSelectors.basePackage("com.algaworks.algafood.api"))
+                    .paths(PathSelectors.ant("/v1/**"))
+                    .build()
                 .useDefaultResponseMessages(false)
                 .globalResponses(HttpMethod.GET, globalGetResponseMessages())
                 .globalResponses(HttpMethod.POST, globalPostResponseMessages())
@@ -93,7 +98,7 @@ public class SpringFoxConfig {
                         buildCollectionModelTypeRole(ProdutoModel.class, ProdutoCollectionModelOpenApi.class),
                         buildCollectionModelTypeRole(UsuarioModel.class, UsuarioCollectionModelOpenApi.class),
                         buildCollectionModelTypeRole(RestauranteBasicoModel.class, RestauranteBasicoCollectionModelOpenApi.class))
-                .apiInfo(apiInfo())
+                .apiInfo(apiInfoV1())
                 .tags(new Tag("Cidades", "Gerencia as Cidades"),
                         new Tag("Grupos", "Gerencia os grupos de usuários"),
                         new Tag("Cozinhas", "Gerencia as cozinhas"),
@@ -105,6 +110,32 @@ public class SpringFoxConfig {
                         new Tag("Usuários", "Gerencia os usuários"),
                         new Tag("Estatísticas", "Estatísticas da AlgaFood"),
                         new Tag("Permissões", "Gerencia as permissões de acesso"));
+    }
+
+    @Bean
+    public Docket apiDocketV2() {
+
+        return new Docket(DocumentationType.OAS_30)
+                    .groupName("V2")
+                    .select()
+                    .apis(RequestHandlerSelectors.basePackage("com.algaworks.algafood.api"))
+                    .paths(PathSelectors.ant("/v2/**"))
+                .build()
+                .useDefaultResponseMessages(false)
+                .globalResponses(HttpMethod.GET, globalGetResponseMessages())
+                .globalResponses(HttpMethod.POST, globalPostResponseMessages())
+                .globalResponses(HttpMethod.PUT, globalPutResponseMessages())
+                .globalResponses(HttpMethod.DELETE, globalDeleteResponseMessages())
+                .additionalModels(typeResolver.resolve(Problem.class))
+                .ignoredParameterTypes(ServletWebRequest.class)
+                .directModelSubstitute(Pageable.class, PageableModelOpenApi.class)
+                .directModelSubstitute(Links.class, LinksModelOpenApi.class)
+                .alternateTypeRules(
+                        buildPagedModelTypeRole(CozinhaModelV2.class, CozinhaCollectionModelV2OpenApi.class),
+                        buildCollectionModelTypeRole(CidadeModelV2.class, CidadeCollectionModelV2OpenApi.class))
+                .apiInfo(apiInfoV2())
+                .tags(new Tag("Cidades", "Gerencia as Cidades"),
+                        new Tag("Cozinhas", "Gerencia as cozinhas"));
     }
 
     @Bean
@@ -122,11 +153,21 @@ public class SpringFoxConfig {
                 typeResolver.resolve(CollectionModel.class, classModel), classCollectionModel);
     }
 
-    private ApiInfo apiInfo() {
+    private ApiInfo apiInfoV1() {
         return new ApiInfoBuilder()
                 .title("AlgaFood API")
                 .description("API aberta para clientes e restaurantes")
-                .version("1")
+                .version("v1")
+                .contact(new Contact("Marcos F. Alves", "https://github.com/marcosfalves", "marcosf_alves@outlook.com"))
+                .build();
+    }
+
+    private ApiInfo apiInfoV2() {
+        return new ApiInfoBuilder()
+                .title("AlgaFood API")
+                .description("<strong>Versão 2 criada somente com alguns endpoints</strong> para aprender e praticar sobre o versionamento de API. " +
+                        "<br>Em uma API real todos endpoints devem ser disponibilizados nas novas versões.")
+                .version("v2")
                 .contact(new Contact("Marcos F. Alves", "https://github.com/marcosfalves", "marcosf_alves@outlook.com"))
                 .build();
     }
