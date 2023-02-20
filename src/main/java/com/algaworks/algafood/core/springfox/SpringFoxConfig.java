@@ -38,6 +38,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.context.request.ServletWebRequest;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RepresentationBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.builders.ResponseBuilder;
@@ -65,14 +66,14 @@ public class SpringFoxConfig {
     private final TypeResolver typeResolver = new TypeResolver();
 
     @Bean
-    public Docket apiDocket() {
-
+    public Docket apiDocketV1() {
 
         return new Docket(DocumentationType.OAS_30)
+                .groupName("V1")
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.algaworks.algafood.api"))
-                //.paths(PathSelectors.ant("/restaurantes/*"))
-                .build()
+                    .apis(RequestHandlerSelectors.basePackage("com.algaworks.algafood.api"))
+                    .paths(PathSelectors.ant("/v1/**"))
+                    .build()
                 .useDefaultResponseMessages(false)
                 .globalResponses(HttpMethod.GET, globalGetResponseMessages())
                 .globalResponses(HttpMethod.POST, globalPostResponseMessages())
@@ -93,7 +94,7 @@ public class SpringFoxConfig {
                         buildCollectionModelTypeRole(ProdutoModel.class, ProdutoCollectionModelOpenApi.class),
                         buildCollectionModelTypeRole(UsuarioModel.class, UsuarioCollectionModelOpenApi.class),
                         buildCollectionModelTypeRole(RestauranteBasicoModel.class, RestauranteBasicoCollectionModelOpenApi.class))
-                .apiInfo(apiInfo())
+                .apiInfo(apiInfoV1())
                 .tags(new Tag("Cidades", "Gerencia as Cidades"),
                         new Tag("Grupos", "Gerencia os grupos de usuários"),
                         new Tag("Cozinhas", "Gerencia as cozinhas"),
@@ -105,6 +106,32 @@ public class SpringFoxConfig {
                         new Tag("Usuários", "Gerencia os usuários"),
                         new Tag("Estatísticas", "Estatísticas da AlgaFood"),
                         new Tag("Permissões", "Gerencia as permissões de acesso"));
+    }
+
+    @Bean
+    public Docket apiDocketV2() {
+
+        return new Docket(DocumentationType.OAS_30)
+                .groupName("V2")
+                .select()
+                    .apis(RequestHandlerSelectors.basePackage("com.algaworks.algafood.api"))
+                    .paths(PathSelectors.ant("/v2/**"))
+                    .build()
+                .useDefaultResponseMessages(false)
+                .globalResponses(HttpMethod.GET, globalGetResponseMessages())
+                .globalResponses(HttpMethod.POST, globalPostResponseMessages())
+                .globalResponses(HttpMethod.PUT, globalPutResponseMessages())
+                .globalResponses(HttpMethod.DELETE, globalDeleteResponseMessages())
+                .additionalModels(typeResolver.resolve(Problem.class))
+                .ignoredParameterTypes(ServletWebRequest.class)
+                .directModelSubstitute(Pageable.class, PageableModelOpenApi.class)
+                .directModelSubstitute(Links.class, LinksModelOpenApi.class)
+//                .alternateTypeRules(
+//                        buildPagedModelTypeRole(CozinhaModel.class, CozinhaCollectionModelOpenApi.class),
+//                        buildCollectionModelTypeRole(CidadeModel.class, CidadeCollectionModelOpenApi.class))
+                .apiInfo(apiInfoV2());
+//                .tags(new Tag("Cidades", "Gerencia as Cidades"),
+//                        new Tag("Cozinhas", "Gerencia as cozinhas"));
     }
 
     @Bean
@@ -122,11 +149,21 @@ public class SpringFoxConfig {
                 typeResolver.resolve(CollectionModel.class, classModel), classCollectionModel);
     }
 
-    private ApiInfo apiInfo() {
+    private ApiInfo apiInfoV1() {
         return new ApiInfoBuilder()
                 .title("AlgaFood API")
                 .description("API aberta para clientes e restaurantes")
-                .version("1")
+                .version("v1")
+                .contact(new Contact("Marcos F. Alves", "https://github.com/marcosfalves", "marcosf_alves@outlook.com"))
+                .build();
+    }
+
+    private ApiInfo apiInfoV2() {
+        return new ApiInfoBuilder()
+                .title("AlgaFood API")
+                .description("<strong>Versão 2 criada somente com alguns endpoints</strong> para aprender e praticar sobre o versionamento de API. " +
+                        "<br>Em uma API real todos endpoints devem ser disponibilizados nas novas versões.")
+                .version("v2")
                 .contact(new Contact("Marcos F. Alves", "https://github.com/marcosfalves", "marcosf_alves@outlook.com"))
                 .build();
     }
