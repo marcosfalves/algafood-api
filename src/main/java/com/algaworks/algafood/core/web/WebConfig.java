@@ -2,6 +2,7 @@ package com.algaworks.algafood.core.web;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
@@ -26,7 +27,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
-        configurer.defaultContentType(ApiMediaTypes.V2_APPLICATION_JSON);
+        configurer.defaultContentType(MediaType.APPLICATION_JSON);
     }
 
     @Override
