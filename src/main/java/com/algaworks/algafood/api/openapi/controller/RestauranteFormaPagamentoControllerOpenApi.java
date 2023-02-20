@@ -9,9 +9,9 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.MediaType;
-
-import java.util.List;
+import org.springframework.http.ResponseEntity;
 
 @Api(tags = "Restaurantes")
 public interface RestauranteFormaPagamentoControllerOpenApi {
@@ -20,7 +20,7 @@ public interface RestauranteFormaPagamentoControllerOpenApi {
             @ApiResponse(responseCode = "404", description = "Restaurante não encontrado",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
     })
-    List<FormaPagamentoModel> listar(@ApiParam("ID do restaurante") Long restauranteId);
+    CollectionModel<FormaPagamentoModel> listar(@ApiParam("ID do restaurante") Long restauranteId);
 
     @ApiOperation("Associação de restaurante com forma de pagamento")
     @ApiResponses({
@@ -29,7 +29,7 @@ public interface RestauranteFormaPagamentoControllerOpenApi {
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 
     })
-    void associarFormaPagamento(@ApiParam("ID do restaurante") Long restauranteId,
+    ResponseEntity<Void> associarFormaPagamento(@ApiParam("ID do restaurante") Long restauranteId,
                                 @ApiParam("ID da forma de pagamento") Long formaPagamentoId);
 
     @ApiOperation("Desassociação de restaurante com forma de pagamento")
@@ -39,6 +39,6 @@ public interface RestauranteFormaPagamentoControllerOpenApi {
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 
     })
-    void desassociarFormaPagamento(@ApiParam("ID do restaurante") Long restauranteId,
+    ResponseEntity<Void> desassociarFormaPagamento(@ApiParam("ID do restaurante") Long restauranteId,
                                    @ApiParam("ID da forma de pagamento") Long formaPagamentoId);
 }

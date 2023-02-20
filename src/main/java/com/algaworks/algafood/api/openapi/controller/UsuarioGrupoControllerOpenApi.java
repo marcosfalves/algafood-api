@@ -9,9 +9,9 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.MediaType;
-
-import java.util.List;
+import org.springframework.http.ResponseEntity;
 
 @Api(tags = "Usuários")
 public interface UsuarioGrupoControllerOpenApi {
@@ -21,8 +21,8 @@ public interface UsuarioGrupoControllerOpenApi {
             @ApiResponse(responseCode = "404", description = "Usuário não encontrado",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
     })
-    List<GrupoModel> listar(@ApiParam(value = "ID do usuário", example = "1")
-                            Long usuarioId);
+    CollectionModel<GrupoModel> listar(@ApiParam(value = "ID do usuário", example = "1")
+                                       Long usuarioId);
 
     @ApiOperation("Associação de grupo com usuário")
     @ApiResponses({
@@ -30,7 +30,7 @@ public interface UsuarioGrupoControllerOpenApi {
             @ApiResponse(responseCode = "404", description = "Usuário ou grupo não encontrado",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
     })
-    void associarGrupo(@ApiParam(value = "ID do usuário", example = "1")
+    ResponseEntity<Void> associarGrupo(@ApiParam(value = "ID do usuário", example = "1")
                        Long usuarioId,
 
                        @ApiParam(value = "ID do grupo", example = "1")
@@ -42,7 +42,7 @@ public interface UsuarioGrupoControllerOpenApi {
             @ApiResponse(responseCode = "404", description = "Usuário ou grupo não encontrado",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
     })
-    void desassociarGrupo(@ApiParam(value = "ID do usuário", example = "1")
+    ResponseEntity<Void> desassociarGrupo(@ApiParam(value = "ID do usuário", example = "1")
                           Long usuarioId,
 
                           @ApiParam(value = "ID do grupo", example = "1")

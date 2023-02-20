@@ -1,7 +1,11 @@
 package com.algaworks.algafood.api.controller;
 
+import com.algaworks.algafood.api.assembler.RestauranteApenasNomeModelAssembler;
+import com.algaworks.algafood.api.assembler.RestauranteBasicoModelAssembler;
 import com.algaworks.algafood.api.assembler.RestauranteInputDisassembler;
 import com.algaworks.algafood.api.assembler.RestauranteModelAssembler;
+import com.algaworks.algafood.api.model.RestauranteApenasNomeModel;
+import com.algaworks.algafood.api.model.RestauranteBasicoModel;
 import com.algaworks.algafood.api.model.RestauranteModel;
 import com.algaworks.algafood.api.model.input.CozinhaIdInput;
 import com.algaworks.algafood.api.model.input.RestauranteInput;
@@ -18,8 +22,10 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.ReflectionUtils;
@@ -56,16 +62,29 @@ public class RestauranteController implements RestauranteControllerOpenApi {
     private RestauranteModelAssembler restauranteModelAssembler;
 
     @Autowired
+    private RestauranteBasicoModelAssembler restauranteBasicoModelAssembler;
+
+    @Autowired
+    private RestauranteApenasNomeModelAssembler restauranteApenasNomeModelAssembler;
+
+    @Autowired
     private RestauranteInputDisassembler restauranteInputDisassembler;
 
     @Autowired
     private SmartValidator validator;
 
     @GetMapping
-    public List<RestauranteModel> listar() {
+    public CollectionModel<RestauranteBasicoModel> listar() {
         List<Restaurante> todosRestaurantes = restauranteRepository.findAll();
 
-        return restauranteModelAssembler.toCollectionModel(todosRestaurantes);
+        return restauranteBasicoModelAssembler.toCollectionModel(todosRestaurantes);
+    }
+
+    @GetMapping(params = "projecao=apenas-nome")
+    public CollectionModel<RestauranteApenasNomeModel> listarApenasNome() {
+        List<Restaurante> todosRestaurantes = restauranteRepository.findAll();
+
+        return restauranteApenasNomeModelAssembler.toCollectionModel(todosRestaurantes);
     }
 
     @GetMapping("/{restauranteId}")
@@ -107,14 +126,16 @@ public class RestauranteController implements RestauranteControllerOpenApi {
 
     @PutMapping("/{restauranteId}/ativo")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void ativar(@PathVariable Long restauranteId) {
+    public ResponseEntity<Void> ativar(@PathVariable Long restauranteId) {
         cadastroRestaurante.ativar(restauranteId);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{restauranteId}/ativo")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void inativar(@PathVariable Long restauranteId) {
+    public ResponseEntity<Void> inativar(@PathVariable Long restauranteId) {
         cadastroRestaurante.inativar(restauranteId);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/ativacoes")
@@ -139,14 +160,16 @@ public class RestauranteController implements RestauranteControllerOpenApi {
 
     @PutMapping("/{restauranteId}/abertura")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void abrir(@PathVariable Long restauranteId) {
+    public ResponseEntity<Void> abrir(@PathVariable Long restauranteId) {
         cadastroRestaurante.abrir(restauranteId);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{restauranteId}/fechamento")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void fechar(@PathVariable Long restauranteId) {
+    public ResponseEntity<Void> fechar(@PathVariable Long restauranteId) {
         cadastroRestaurante.fechar(restauranteId);
+        return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{restauranteId}")

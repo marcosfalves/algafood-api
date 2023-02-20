@@ -1,17 +1,37 @@
-package com.algaworks.algafood.core.openapi;
+package com.algaworks.algafood.core.springfox;
 
 import com.algaworks.algafood.api.exceptionhandler.Problem;
+import com.algaworks.algafood.api.model.CidadeModel;
 import com.algaworks.algafood.api.model.CozinhaModel;
+import com.algaworks.algafood.api.model.EstadoModel;
+import com.algaworks.algafood.api.model.FormaPagamentoModel;
+import com.algaworks.algafood.api.model.GrupoModel;
 import com.algaworks.algafood.api.model.PedidoResumoModel;
+import com.algaworks.algafood.api.model.PermissaoModel;
+import com.algaworks.algafood.api.model.ProdutoModel;
+import com.algaworks.algafood.api.model.RestauranteBasicoModel;
+import com.algaworks.algafood.api.model.UsuarioModel;
+import com.algaworks.algafood.api.openapi.model.CidadeCollectionModelOpenApi;
+import com.algaworks.algafood.api.openapi.model.CozinhaCollectionModelOpenApi;
+import com.algaworks.algafood.api.openapi.model.EstadoCollectionModelOpenApi;
+import com.algaworks.algafood.api.openapi.model.FormaPagamentoCollectionModelOpenApi;
+import com.algaworks.algafood.api.openapi.model.GrupoCollectionModelOpenApi;
+import com.algaworks.algafood.api.openapi.model.LinksModelOpenApi;
 import com.algaworks.algafood.api.openapi.model.PageableModelOpenApi;
-import com.algaworks.algafood.api.openapi.model.PagedModelOpenApi;
+import com.algaworks.algafood.api.openapi.model.PedidoResumoCollectionModelOpenApi;
+import com.algaworks.algafood.api.openapi.model.PermissaoCollectionModelOpenApi;
+import com.algaworks.algafood.api.openapi.model.ProdutoCollectionModelOpenApi;
+import com.algaworks.algafood.api.openapi.model.RestauranteBasicoCollectionModelOpenApi;
+import com.algaworks.algafood.api.openapi.model.UsuarioCollectionModelOpenApi;
 import com.fasterxml.classmate.TypeResolver;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.Links;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -61,9 +81,18 @@ public class SpringFoxConfig {
                 .additionalModels(typeResolver.resolve(Problem.class))
                 .ignoredParameterTypes(ServletWebRequest.class)
                 .directModelSubstitute(Pageable.class, PageableModelOpenApi.class)
+                .directModelSubstitute(Links.class, LinksModelOpenApi.class)
                 .alternateTypeRules(
-                        buildPageTypeRole(CozinhaModel.class),
-                        buildPageTypeRole(PedidoResumoModel.class))
+                        buildPagedModelTypeRole(PedidoResumoModel.class, PedidoResumoCollectionModelOpenApi.class),
+                        buildPagedModelTypeRole(CozinhaModel.class, CozinhaCollectionModelOpenApi.class),
+                        buildCollectionModelTypeRole(CidadeModel.class, CidadeCollectionModelOpenApi.class),
+                        buildCollectionModelTypeRole(EstadoModel.class, EstadoCollectionModelOpenApi.class),
+                        buildCollectionModelTypeRole(FormaPagamentoModel.class, FormaPagamentoCollectionModelOpenApi.class),
+                        buildCollectionModelTypeRole(GrupoModel.class, GrupoCollectionModelOpenApi.class),
+                        buildCollectionModelTypeRole(PermissaoModel.class, PermissaoCollectionModelOpenApi.class),
+                        buildCollectionModelTypeRole(ProdutoModel.class, ProdutoCollectionModelOpenApi.class),
+                        buildCollectionModelTypeRole(UsuarioModel.class, UsuarioCollectionModelOpenApi.class),
+                        buildCollectionModelTypeRole(RestauranteBasicoModel.class, RestauranteBasicoCollectionModelOpenApi.class))
                 .apiInfo(apiInfo())
                 .tags(new Tag("Cidades", "Gerencia as Cidades"),
                         new Tag("Grupos", "Gerencia os grupos de usuários"),
@@ -74,7 +103,8 @@ public class SpringFoxConfig {
                         new Tag("Estados", "Gerencia os estados"),
                         new Tag("Produtos", "Gerencia os produtos de restaurantes"),
                         new Tag("Usuários", "Gerencia os usuários"),
-                        new Tag("Estatísticas", "Estatísticas da AlgaFood"));
+                        new Tag("Estatísticas", "Estatísticas da AlgaFood"),
+                        new Tag("Permissões", "Gerencia as permissões de acesso"));
     }
 
     @Bean
@@ -82,11 +112,14 @@ public class SpringFoxConfig {
         return objectMapper -> objectMapper.registerModule(new JavaTimeModule());
     }
 
-    private <T> AlternateTypeRule buildPageTypeRole(Class<T> classModel) {
+    private <M, P> AlternateTypeRule buildPagedModelTypeRole(Class<M> classModel, Class<P> classPagedModel) {
         return AlternateTypeRules.newRule(
-                typeResolver.resolve(Page.class, classModel),
-                typeResolver.resolve(PagedModelOpenApi.class, classModel)
-        );
+                typeResolver.resolve(PagedModel.class, classModel), classPagedModel);
+    }
+
+    private <M, C> AlternateTypeRule buildCollectionModelTypeRole(Class<M> classModel, Class<C> classCollectionModel) {
+        return AlternateTypeRules.newRule(
+                typeResolver.resolve(CollectionModel.class, classModel), classCollectionModel);
     }
 
     private ApiInfo apiInfo() {

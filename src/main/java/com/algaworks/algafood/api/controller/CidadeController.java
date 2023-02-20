@@ -1,16 +1,18 @@
 package com.algaworks.algafood.api.controller;
 
+import com.algaworks.algafood.api.ResourceUriHelper;
 import com.algaworks.algafood.api.assembler.CidadeInputDisassembler;
 import com.algaworks.algafood.api.assembler.CidadeModelAssembler;
-import com.algaworks.algafood.api.openapi.controller.CidadeControllerOpenApi;
 import com.algaworks.algafood.api.model.CidadeModel;
 import com.algaworks.algafood.api.model.input.CidadeInput;
+import com.algaworks.algafood.api.openapi.controller.CidadeControllerOpenApi;
 import com.algaworks.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.repository.CidadeRepository;
 import com.algaworks.algafood.domain.service.CadastroCidadeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -42,7 +44,7 @@ public class CidadeController implements CidadeControllerOpenApi {
     private CidadeInputDisassembler cidadeInputDisassembler;
 
     @GetMapping
-    public List<CidadeModel> listar() {
+    public CollectionModel<CidadeModel> listar() {
         List<Cidade> todasCidades = cidadeRepository.findAll();
 
         return cidadeModelAssembler.toCollectionModel(todasCidades);
@@ -62,6 +64,8 @@ public class CidadeController implements CidadeControllerOpenApi {
             Cidade cidade = cidadeInputDisassembler.toDomainObject(cidadeInput);
 
             cidade = cadastroCidade.salvar(cidade);
+
+            ResourceUriHelper.addUriInResponseHeader(cidade.getId());
 
             return cidadeModelAssembler.toModel(cidade);
         } catch (EstadoNaoEncontradoException e) {

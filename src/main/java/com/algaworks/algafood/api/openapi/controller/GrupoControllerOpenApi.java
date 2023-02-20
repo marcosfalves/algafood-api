@@ -10,14 +10,13 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.MediaType;
-
-import java.util.List;
 
 @Api(tags = "Grupos")
 public interface GrupoControllerOpenApi {
-    @ApiOperation("Lista os Grupos")
-    List<GrupoModel> listar();
+    @ApiOperation("Lista os grupos")
+    CollectionModel<GrupoModel> listar();
 
     @ApiOperation("Busca um grupo por ID")
     @ApiResponses({

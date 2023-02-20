@@ -9,9 +9,9 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.MediaType;
-
-import java.util.List;
+import org.springframework.http.ResponseEntity;
 
 @Api(tags = "Restaurantes")
 public interface RestauranteUsuarioResponsavelControllerOpenApi {
@@ -20,7 +20,7 @@ public interface RestauranteUsuarioResponsavelControllerOpenApi {
             @ApiResponse(responseCode = "404", description = "Restaurante não encontrado",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
     })
-    List<UsuarioModel> listar(@ApiParam("ID do restaurante") Long restauranteId);
+    CollectionModel<UsuarioModel> listar(@ApiParam("ID do restaurante") Long restauranteId);
 
     @ApiOperation("Associação de restaurante com usuário responsável")
     @ApiResponses({
@@ -29,7 +29,7 @@ public interface RestauranteUsuarioResponsavelControllerOpenApi {
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 
     })
-    void associarUsuario(@ApiParam("ID do restaurante") Long restauranteId,
+    ResponseEntity<Void> associarUsuario(@ApiParam("ID do restaurante") Long restauranteId,
                          @ApiParam("ID do usuário") Long usuarioId);
 
     @ApiOperation("Desassociação de restaurante com usuário responsável")
@@ -39,6 +39,6 @@ public interface RestauranteUsuarioResponsavelControllerOpenApi {
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 
     })
-    void desassociarUsuario(@ApiParam("ID do restaurante") Long restauranteId,
+    ResponseEntity<Void> desassociarUsuario(@ApiParam("ID do restaurante") Long restauranteId,
                             @ApiParam("ID do usuário") Long usuarioId);
 }
