@@ -23,6 +23,10 @@ import com.algaworks.algafood.api.v1.openapi.model.PermissaoCollectionModelOpenA
 import com.algaworks.algafood.api.v1.openapi.model.ProdutoCollectionModelOpenApi;
 import com.algaworks.algafood.api.v1.openapi.model.RestauranteBasicoCollectionModelOpenApi;
 import com.algaworks.algafood.api.v1.openapi.model.UsuarioCollectionModelOpenApi;
+import com.algaworks.algafood.api.v2.model.CidadeModelV2;
+import com.algaworks.algafood.api.v2.model.CozinhaModelV2;
+import com.algaworks.algafood.api.v2.openapi.model.CidadeCollectionModelV2OpenApi;
+import com.algaworks.algafood.api.v2.openapi.model.CozinhaCollectionModelV2OpenApi;
 import com.fasterxml.classmate.TypeResolver;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.annotation.Bean;
@@ -112,11 +116,11 @@ public class SpringFoxConfig {
     public Docket apiDocketV2() {
 
         return new Docket(DocumentationType.OAS_30)
-                .groupName("V2")
-                .select()
+                    .groupName("V2")
+                    .select()
                     .apis(RequestHandlerSelectors.basePackage("com.algaworks.algafood.api"))
                     .paths(PathSelectors.ant("/v2/**"))
-                    .build()
+                .build()
                 .useDefaultResponseMessages(false)
                 .globalResponses(HttpMethod.GET, globalGetResponseMessages())
                 .globalResponses(HttpMethod.POST, globalPostResponseMessages())
@@ -126,12 +130,12 @@ public class SpringFoxConfig {
                 .ignoredParameterTypes(ServletWebRequest.class)
                 .directModelSubstitute(Pageable.class, PageableModelOpenApi.class)
                 .directModelSubstitute(Links.class, LinksModelOpenApi.class)
-//                .alternateTypeRules(
-//                        buildPagedModelTypeRole(CozinhaModel.class, CozinhaCollectionModelOpenApi.class),
-//                        buildCollectionModelTypeRole(CidadeModel.class, CidadeCollectionModelOpenApi.class))
-                .apiInfo(apiInfoV2());
-//                .tags(new Tag("Cidades", "Gerencia as Cidades"),
-//                        new Tag("Cozinhas", "Gerencia as cozinhas"));
+                .alternateTypeRules(
+                        buildPagedModelTypeRole(CozinhaModelV2.class, CozinhaCollectionModelV2OpenApi.class),
+                        buildCollectionModelTypeRole(CidadeModelV2.class, CidadeCollectionModelV2OpenApi.class))
+                .apiInfo(apiInfoV2())
+                .tags(new Tag("Cidades", "Gerencia as Cidades"),
+                        new Tag("Cozinhas", "Gerencia as cozinhas"));
     }
 
     @Bean
