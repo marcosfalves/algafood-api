@@ -63,6 +63,10 @@ algafood:
       regiao: us-east-1
       diretorio-fotos: catalogo
 
+  logging:
+    loggly:
+      token: ${CUSTOMER_TOKEN_LOGGLY}
+
 #logging:
 #  level:
 #    org:
