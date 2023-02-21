@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
 @ApiModel("Problema")
 @JsonInclude(Include.NON_NULL)
 @Getter
+@ToString
 @Builder
 public class Problem {
 
@@ -41,6 +43,7 @@ public class Problem {
 
     @ApiModel("ObjetoProblema")
     @Getter
+    @ToString
     @Builder
     public static class Object {
 
