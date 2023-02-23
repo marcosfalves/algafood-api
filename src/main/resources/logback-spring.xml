@@ -4,10 +4,11 @@
 
     <springProfile name="production">
         <springProperty name="logglyToken" source="algafood.logging.loggly.token"/>
+        <springProperty name="logglyTag" source="algafood.logging.loggly.apptag"/>
 
         <appender name="loggly" class="ch.qos.logback.ext.loggly.LogglyAppender">
-            <endpointUrl>https://logs-01.loggly.com/inputs/${logglyToken}/tag/algafood-api</endpointUrl>
-            <pattern>%d{"ISO8601", UTC} %p %t %c{0}.%M - %m%n</pattern>
+            <endpointUrl>https://logs-01.loggly.com/inputs/${logglyToken}/tag/${logglyTag}</endpointUrl>
+            <pattern>%d{"ISO8601", UTC} ${LOG_LEVEL_PATTERN:-%5p} [%thread] %logger{10}.%method - %msg%n</pattern>
         </appender>
 
         <appender name="logglyAsync" class="ch.qos.logback.classic.AsyncAppender">
