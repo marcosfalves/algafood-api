@@ -68,6 +68,17 @@ algafood:
       token: ${CUSTOMER_TOKEN_LOGGLY}
       apptag: algafood-api
 
+#Separar no profile de prod.
+#logging:
+#  level:
+#    org:
+#      hibernate: error
+#      springframework:
+#        web: debug
+#        servlet:
+#          view:
+#            freemarker: warn
+
 #logging:
 #  level:
 #    org:
