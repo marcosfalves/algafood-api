@@ -45,6 +45,12 @@ spring:
     settings:
       locale: pt_BR
 
+  #Basic Auth
+  security:
+    user:
+      name: algafood
+      password: 123456
+
 algafood:
   email:
     impl: fake
