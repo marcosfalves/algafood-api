@@ -45,6 +45,14 @@ spring:
     settings:
       locale: pt_BR
 
+  security:
+    oauth2:
+      resourceserver:
+        opaquetoken:
+          introspection-uri: "http://auth.algafood.local:8082/oauth/check_token"
+          client-id: checktoken
+          client-secret: check123
+
 algafood:
   email:
     impl: fake
