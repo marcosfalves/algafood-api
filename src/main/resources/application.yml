@@ -45,14 +45,6 @@ spring:
     settings:
       locale: pt_BR
 
-  security:
-    oauth2:
-      resourceserver:
-        opaquetoken:
-          introspection-uri: "http://auth.algafood.local:8082/oauth/check_token"
-          client-id: checktoken
-          client-secret: check123
-
 algafood:
   email:
     impl: fake
@@ -76,7 +68,7 @@ algafood:
       token: ${CUSTOMER_TOKEN_LOGGLY}
       apptag: algafood-api
 
-#Separar no profile de prod.
+#TODO Separar no profile de prod.
 #logging:
 #  level:
 #    org:
