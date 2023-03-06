@@ -45,11 +45,8 @@ public class Usuario {
             inverseJoinColumns = @JoinColumn(name = "grupo_id"))
     private Set<Grupo> grupos = new HashSet<>();
 
-    public boolean senhaCoincideCom(String senha){
-        return this.senha.equals(senha);
-    }
-    public boolean senhaNaoCoincideCom(String senha){
-        return !senhaCoincideCom(senha);
+    public boolean isNovo() {
+        return this.id == null;
     }
 
     public boolean adicionarGrupo(Grupo grupo){
