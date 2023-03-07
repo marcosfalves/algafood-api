@@ -24,11 +24,11 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/v1/cozinhas/**").authenticated()
                 .anyRequest().denyAll()
              .and()
+                .csrf().disable()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-             .and()
-             .cors().and()
-             .oauth2ResourceServer()
+             .and().cors()
+             .and().oauth2ResourceServer()
                 .jwt()
                 .jwtAuthenticationConverter(jwtAuthenticationConverter());
     }
