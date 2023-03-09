@@ -83,7 +83,7 @@ public class RestauranteProdutoFotoController implements RestauranteProdutoFotoC
         }
     }
 
-    @CheckSecurity.Restaurantes.PodeEditar
+    @CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public FotoProdutoModel atualizar(@PathVariable Long restauranteId, @PathVariable Long produtoId,
                                       @Valid FotoProdutoInput fotoProdutoInput) throws IOException {
@@ -103,7 +103,7 @@ public class RestauranteProdutoFotoController implements RestauranteProdutoFotoC
         return fotoProdutoModelAssembler.toModel(fotoSalva);
     }
 
-    @CheckSecurity.Restaurantes.PodeEditar
+    @CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void excluir(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
