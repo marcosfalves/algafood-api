@@ -11,6 +11,38 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 public @interface CheckSecurity {
 
+    @interface Estados {
+
+        @PreAuthorize("hasAuthority('SCOPE_WRITE') and hasAuthority('EDITAR_ESTADOS')")
+        @Retention(RUNTIME)
+        @Target(METHOD)
+        @interface PodeEditar {
+        }
+
+        @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
+        @Retention(RUNTIME)
+        @Target(METHOD)
+        @interface PodeConsultar {
+        }
+
+    }
+
+    @interface Cidades {
+
+        @PreAuthorize("hasAuthority('SCOPE_WRITE') and hasAuthority('EDITAR_CIDADES')")
+        @Retention(RUNTIME)
+        @Target(METHOD)
+        @interface PodeEditar {
+        }
+
+        @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
+        @Retention(RUNTIME)
+        @Target(METHOD)
+        @interface PodeConsultar {
+        }
+
+    }
+
     @interface Cozinhas {
 
         @PreAuthorize("hasAuthority('SCOPE_WRITE') and hasAuthority('EDITAR_COZINHAS')")
