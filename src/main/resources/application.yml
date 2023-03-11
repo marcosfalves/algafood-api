@@ -74,6 +74,12 @@ algafood:
       token: ${CUSTOMER_TOKEN_LOGGLY}
       apptag: algafood-api
 
+  jwt:
+    keystore:
+      jks-location: classpath:keys/algafood.jks
+      password: "123456"
+      keypair-alias: "algafood"
+
 #TODO Separar no profile de prod.
 #logging:
 #  level:
