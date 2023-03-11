@@ -163,11 +163,8 @@ public @interface CheckSecurity {
         @interface PodeCriar {
         }
 
-        @PreAuthorize("""
-                hasAuthority('SCOPE_WRITE')
-                and (hasAuthority('GERENCIAR_PEDIDOS') or
-                     @apiSecurity.gerenciaRestauranteDoPedido(#codigoPedido))
-                """)
+
+        @PreAuthorize("@apiSecurity.podeGerenciarPedidos(#codigoPedido)")
         @Retention(RUNTIME)
         @Target(METHOD)
         @interface PodeGerenciarPedidos {

@@ -21,6 +21,11 @@ public class ApiSecurity {
         return SecurityContextHolder.getContext().getAuthentication();
     }
 
+    public boolean hasAuthority(String authorityName) {
+        return getAuthentication().getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(authorityName));
+    }
+
     public Long getUsuarioId() {
         var jwt = (Jwt) getAuthentication().getPrincipal();
 
@@ -44,5 +49,10 @@ public class ApiSecurity {
             return false;
         }
         return pedidoRepository.isPedidoGerenciadoPor(codigoPedido, getUsuarioId());
+    }
+
+    public boolean podeGerenciarPedidos(String codigoPedido) {
+        return hasAuthority("SCOPE_WRITE") &&
+                (hasAuthority("GERENCIAR_PEDIDOS") || gerenciaRestauranteDoPedido(codigoPedido));
     }
 }
