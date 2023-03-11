@@ -4,6 +4,7 @@ import com.algaworks.algafood.api.v1.ApiLinks;
 import com.algaworks.algafood.api.v1.assembler.PermissaoModelAssembler;
 import com.algaworks.algafood.api.v1.model.PermissaoModel;
 import com.algaworks.algafood.api.v1.openapi.controller.GrupoPermissaoControllerOpenApi;
+import com.algaworks.algafood.core.security.ApiSecurity;
 import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Grupo;
 import com.algaworks.algafood.domain.service.CadastroGrupoService;
@@ -33,6 +34,9 @@ public class GrupoPermissaoController implements GrupoPermissaoControllerOpenApi
     @Autowired
     private ApiLinks apiLinks;
 
+    @Autowired
+    private ApiSecurity apiSecurity;
+
     @CheckSecurity.ControleDeAcesso.PodeConsultar
     @GetMapping
     public CollectionModel<PermissaoModel> listar(@PathVariable Long grupoId) {
@@ -40,15 +44,20 @@ public class GrupoPermissaoController implements GrupoPermissaoControllerOpenApi
 
         var permissoesModel = permissaoModelAssembler
                 .toCollectionModel(grupo.getPermissoes())
-                .removeLinks()
-                .add(apiLinks.linkToGrupoPermissoes(grupoId))
-                .add(apiLinks.linkToGrupoPermissaoAssociacao(grupoId, "associar"));
+                .removeLinks();
 
-        permissoesModel.getContent().forEach(permissaoModel ->
-                permissaoModel.add(
-                        apiLinks.linkToGrupoPermissaoDesassociacao(grupoId, permissaoModel.getId(), "desassociar")
-                )
-        );
+        permissoesModel.add(apiLinks.linkToGrupoPermissoes(grupoId));
+
+        if (apiSecurity.podeEditarControleDeAcesso()) {
+            permissoesModel.add(apiLinks.linkToGrupoPermissoes(grupoId))
+                    .add(apiLinks.linkToGrupoPermissaoAssociacao(grupoId, "associar"));
+
+            permissoesModel.getContent().forEach(permissaoModel ->
+                    permissaoModel.add(
+                            apiLinks.linkToGrupoPermissaoDesassociacao(grupoId, permissaoModel.getId(), "desassociar")
+                    )
+            );
+        }
 
         return permissoesModel;
     }

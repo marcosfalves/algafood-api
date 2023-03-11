@@ -4,6 +4,7 @@ import com.algaworks.algafood.api.v1.ApiLinks;
 import com.algaworks.algafood.api.v1.assembler.UsuarioModelAssembler;
 import com.algaworks.algafood.api.v1.model.UsuarioModel;
 import com.algaworks.algafood.api.v1.openapi.controller.RestauranteUsuarioResponsavelControllerOpenApi;
+import com.algaworks.algafood.core.security.ApiSecurity;
 import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.service.CadastroRestauranteService;
@@ -33,6 +34,9 @@ public class RestauranteUsuarioResponsavelController implements RestauranteUsuar
     @Autowired
     private ApiLinks apiLinks;
 
+    @Autowired
+    private ApiSecurity apiSecurity;
+
     @CheckSecurity.Restaurantes.PodeConsultar
     @GetMapping
     public CollectionModel<UsuarioModel> listar(@PathVariable Long restauranteId) {
@@ -40,15 +44,19 @@ public class RestauranteUsuarioResponsavelController implements RestauranteUsuar
 
         var usuariosResponsaveis = usuarioModelAssembler
                 .toCollectionModel(restaurante.getResponsaveis())
-                .removeLinks()
-                .add(apiLinks.linkToRestauranteResponsaveis(restauranteId))
-                .add(apiLinks.linkToRestauranteResponsavelAssociacao(restauranteId, "associar"));
+                .removeLinks();
 
-        usuariosResponsaveis.getContent().forEach(usuarioModel ->
-            usuarioModel.add(
-                    apiLinks.linkToRestauranteResponsavelDesassociacao(
-                            restauranteId, usuarioModel.getId(), "desassociar"))
-        );
+        usuariosResponsaveis.add(apiLinks.linkToRestauranteResponsaveis(restauranteId));
+
+        if (apiSecurity.podeGerenciarCadastroRestaurantes()) {
+            usuariosResponsaveis.add(apiLinks.linkToRestauranteResponsavelAssociacao(restauranteId, "associar"));
+
+            usuariosResponsaveis.getContent().forEach(usuarioModel ->
+                    usuarioModel.add(
+                            apiLinks.linkToRestauranteResponsavelDesassociacao(
+                                    restauranteId, usuarioModel.getId(), "desassociar"))
+            );
+        }
 
         return usuariosResponsaveis;
     }

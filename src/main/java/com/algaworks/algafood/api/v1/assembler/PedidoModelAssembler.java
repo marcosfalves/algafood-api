@@ -32,7 +32,9 @@ public class PedidoModelAssembler extends RepresentationModelAssemblerSupport<Pe
         var pedidoModel = createModelWithId(pedido.getCodigo(), pedido);
         modelMapper.map(pedido, pedidoModel);
 
-        pedidoModel.add(apiLinks.linkToPedidos(IanaLinkRelations.COLLECTION.value()));
+        if (apiSecurity.podePesquisarPedidos()) {
+            pedidoModel.add(apiLinks.linkToPedidos(IanaLinkRelations.COLLECTION.value()));
+        }
 
         if (apiSecurity.podeGerenciarPedidos(pedido.getCodigo())) {
             if (pedido.podeSerConfirmado()) {
@@ -46,23 +48,32 @@ public class PedidoModelAssembler extends RepresentationModelAssemblerSupport<Pe
             }
         }
 
-        pedidoModel.getRestaurante().add(
-                apiLinks.linkToRestaurante(pedido.getRestaurante().getId()));
+        if (apiSecurity.podeConsultarRestaurantes()) {
+            pedidoModel.getRestaurante().add(
+                    apiLinks.linkToRestaurante(pedido.getRestaurante().getId()));
 
-        pedidoModel.getCliente().add(
-                apiLinks.linkToUsuario(pedido.getCliente().getId()));
+            // Quem pode consultar restaurantes, também pode consultar os produtos dos restaurantes
+            pedidoModel.getItens().forEach(itemPedidoModel ->
+                    itemPedidoModel.add(apiLinks.linkToProduto(
+                            pedido.getRestaurante().getId(), itemPedidoModel.getProdutoId(), "produto")
+                    )
+            );
+        }
 
-        pedidoModel.getFormaPagamento().add(
-                apiLinks.linkToFormaPagamento(pedido.getFormaPagamento().getId()));
+        if (apiSecurity.podeConsultarControleDeAcesso()) {
+            pedidoModel.getCliente().add(
+                    apiLinks.linkToUsuario(pedido.getCliente().getId()));
+        }
 
-        pedidoModel.getEnderecoEntrega().getCidade().add(
-                apiLinks.linkToCidade(pedido.getEnderecoEntrega().getCidade().getId()));
+        if (apiSecurity.podeConsultarFormasPagamento()) {
+            pedidoModel.getFormaPagamento().add(
+                    apiLinks.linkToFormaPagamento(pedido.getFormaPagamento().getId()));
+        }
 
-        pedidoModel.getItens().forEach(itemPedidoModel ->
-                itemPedidoModel.add(apiLinks.linkToProduto(
-                        pedido.getRestaurante().getId(), itemPedidoModel.getProdutoId(), "produto")
-                )
-        );
+        if (apiSecurity.podeConsultarCidades()) {
+            pedidoModel.getEnderecoEntrega().getCidade().add(
+                    apiLinks.linkToCidade(pedido.getEnderecoEntrega().getCidade().getId()));
+        }
 
         return pedidoModel;
     }

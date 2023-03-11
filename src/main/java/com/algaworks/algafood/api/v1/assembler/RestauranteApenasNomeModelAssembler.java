@@ -3,6 +3,7 @@ package com.algaworks.algafood.api.v1.assembler;
 import com.algaworks.algafood.api.v1.ApiLinks;
 import com.algaworks.algafood.api.v1.controller.RestauranteController;
 import com.algaworks.algafood.api.v1.model.RestauranteApenasNomeModel;
+import com.algaworks.algafood.core.security.ApiSecurity;
 import com.algaworks.algafood.domain.model.Restaurante;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class RestauranteApenasNomeModelAssembler
     @Autowired
     private ApiLinks apiLinks;
 
+    @Autowired
+    private ApiSecurity apiSecurity;
+
     public RestauranteApenasNomeModelAssembler() {
         super(RestauranteController.class, RestauranteApenasNomeModel.class);
     }
@@ -29,14 +33,21 @@ public class RestauranteApenasNomeModelAssembler
         var restauranteModel = createModelWithId(restaurante.getId(), restaurante);
         modelMapper.map(restaurante, restauranteModel);
 
-        restauranteModel.add(apiLinks.linkToRestaurantes(IanaLinkRelations.COLLECTION.value()));
+        if (apiSecurity.podeConsultarRestaurantes()) {
+            restauranteModel.add(apiLinks.linkToRestaurantes(IanaLinkRelations.COLLECTION.value()));
+        }
 
         return restauranteModel;
     }
 
     @Override
     public CollectionModel<RestauranteApenasNomeModel> toCollectionModel(Iterable<? extends Restaurante> entities) {
-        return super.toCollectionModel(entities)
-                .add(apiLinks.linkToRestaurantes());
+        var collectionModel = super.toCollectionModel(entities);
+
+        if (apiSecurity.podeConsultarRestaurantes()) {
+            collectionModel.add(apiLinks.linkToRestaurantes());
+        }
+
+        return collectionModel;
     }
 }

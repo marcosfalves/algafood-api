@@ -29,13 +29,13 @@ public @interface CheckSecurity {
         @interface PodeAlterarUsuario{
         }
 
-        @PreAuthorize("hasAuthority('SCOPE_WRITE') and hasAuthority('EDITAR_USUARIOS_GRUPOS_PERMISSOES')")
+        @PreAuthorize("@apiSecurity.podeEditarControleDeAcesso()")
         @Retention(RUNTIME)
         @Target(METHOD)
         @interface PodeEditar{
         }
 
-        @PreAuthorize("hasAuthority('SCOPE_READ') and hasAuthority('CONSULTAR_USUARIOS_GRUPOS_PERMISSOES')")
+        @PreAuthorize("@apiSecurity.podeConsultarControleDeAcesso()")
         @Retention(RUNTIME)
         @Target(METHOD)
         @interface PodeConsultar{
@@ -51,7 +51,7 @@ public @interface CheckSecurity {
         @interface PodeEditar {
         }
 
-        @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
+        @PreAuthorize("@apiSecurity.podeConsultarEstados()")
         @Retention(RUNTIME)
         @Target(METHOD)
         @interface PodeConsultar {
@@ -67,7 +67,7 @@ public @interface CheckSecurity {
         @interface PodeEditar {
         }
 
-        @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
+        @PreAuthorize("@apiSecurity.podeConsultarCidades()")
         @Retention(RUNTIME)
         @Target(METHOD)
         @interface PodeConsultar {
@@ -83,7 +83,7 @@ public @interface CheckSecurity {
         @interface PodeEditar {
         }
 
-        @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
+        @PreAuthorize("@apiSecurity.podeConsultarCozinhas()")
         @Retention(RUNTIME)
         @Target(METHOD)
         @interface PodeConsultar {
@@ -99,7 +99,7 @@ public @interface CheckSecurity {
         @interface PodeEditar {
         }
 
-        @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
+        @PreAuthorize("@apiSecurity.podeConsultarFormasPagamento()")
         @Retention(RUNTIME)
         @Target(METHOD)
         @interface PodeConsultar {
@@ -109,23 +109,19 @@ public @interface CheckSecurity {
 
     @interface Restaurantes {
 
-        @PreAuthorize("hasAuthority('SCOPE_WRITE') and hasAuthority('EDITAR_RESTAURANTES')")
+        @PreAuthorize("@apiSecurity.podeGerenciarCadastroRestaurantes()")
         @Retention(RUNTIME)
         @Target(METHOD)
         @interface PodeGerenciarCadastro {
         }
 
-        @PreAuthorize("""
-                hasAuthority('SCOPE_WRITE')
-                and (hasAuthority('EDITAR_RESTAURANTES') or
-                     @apiSecurity.gerenciaRestaurante(#restauranteId))
-                """)
+        @PreAuthorize("@apiSecurity.podeGerenciarFuncionamentoRestaurantes(#restauranteId)")
         @Retention(RUNTIME)
         @Target(METHOD)
         @interface PodeGerenciarFuncionamento {
         }
 
-        @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
+        @PreAuthorize("@apiSecurity.podeConsultarRestaurantes()")
         @Retention(RUNTIME)
         @Target(METHOD)
         @interface PodeConsultar {
@@ -135,23 +131,14 @@ public @interface CheckSecurity {
 
     @interface Pedidos {
 
-        @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
-        @PostAuthorize("""
-            hasAuthority('CONSULTAR_PEDIDOS') or
-            @apiSecurity.usuarioAutenticadoIgual(returnObject.cliente.id) or
-            @apiSecurity.gerenciaRestaurante(returnObject.restaurante.id)
-        """)
+        @PreAuthorize("@apiSecurity.podePesquisarPedidos()")
+        @PostAuthorize("@apiSecurity.podePesquisarPedidos(returnObject.cliente.id, returnObject.restaurante.id)")
         @Retention(RUNTIME)
         @Target(METHOD)
         @interface PodeBuscar {
         }
 
-        @PreAuthorize("""
-            hasAuthority('SCOPE_READ') and isAuthenticated() and
-            (hasAuthority('CONSULTAR_PEDIDOS') or
-            @apiSecurity.usuarioAutenticadoIgual(#filtro.clienteId) or
-            @apiSecurity.gerenciaRestaurante(#filtro.restauranteId))
-        """)
+        @PreAuthorize("@apiSecurity.podePesquisarPedidos(#filtro.clienteId, #filtro.restauranteId)")
         @Retention(RUNTIME)
         @Target(METHOD)
         @interface PodePesquisar {
@@ -174,7 +161,7 @@ public @interface CheckSecurity {
 
     @interface Estatisticas {
 
-        @PreAuthorize("hasAuthority('SCOPE_READ') and hasAuthority('GERAR_RELATORIOS')")
+        @PreAuthorize("@apiSecurity.podeConsultarEstatisticas()")
         @Retention(RUNTIME)
         @Target(METHOD)
         @interface PodeConsultar {
