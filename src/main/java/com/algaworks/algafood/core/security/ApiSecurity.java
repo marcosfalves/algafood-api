@@ -27,6 +27,11 @@ public class ApiSecurity {
         return jwt.getClaim("usuario_id");
     }
 
+    public boolean usuarioAutenticadoIgual(Long usuarioId) {
+        return getUsuarioId() != null && usuarioId != null
+                && getUsuarioId().equals(usuarioId);
+    }
+
     public boolean gerenciaRestaurante(Long restauranteId) {
         if (restauranteId == null) {
             return false;

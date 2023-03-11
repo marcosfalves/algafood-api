@@ -13,7 +13,7 @@ public @interface CheckSecurity {
 
     @interface ControleDeAcesso {
 
-        @PreAuthorize("hasAuthority('SCOPE_WRITE') and @apiSecurity.getUsuarioId() == #usuarioId")
+        @PreAuthorize("hasAuthority('SCOPE_WRITE') and @apiSecurity.usuarioAutenticadoIgual(#usuarioId)")
         @Retention(RUNTIME)
         @Target(METHOD)
         @interface PodeAlterarPropriaSenha{
@@ -21,7 +21,7 @@ public @interface CheckSecurity {
 
         @PreAuthorize("""
             hasAuthority('SCOPE_WRITE') and 
-            (@apiSecurity.getUsuarioId() == #usuarioId or
+            (@apiSecurity.usuarioAutenticadoIgual(#usuarioId) or
             hasAuthority('EDITAR_USUARIOS_GRUPOS_PERMISSOES'))
         """)
         @Retention(RUNTIME)
@@ -138,7 +138,7 @@ public @interface CheckSecurity {
         @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
         @PostAuthorize("""
             hasAuthority('CONSULTAR_PEDIDOS') or
-            @apiSecurity.getUsuarioId() == returnObject.cliente.id or
+            @apiSecurity.usuarioAutenticadoIgual(returnObject.cliente.id) or
             @apiSecurity.gerenciaRestaurante(returnObject.restaurante.id)
         """)
         @Retention(RUNTIME)
@@ -149,7 +149,7 @@ public @interface CheckSecurity {
         @PreAuthorize("""
             hasAuthority('SCOPE_READ') and isAuthenticated() and
             (hasAuthority('CONSULTAR_PEDIDOS') or
-            @apiSecurity.getUsuarioId() == #filtro.clienteId or
+            @apiSecurity.usuarioAutenticadoIgual(#filtro.clienteId) or
             @apiSecurity.gerenciaRestaurante(#filtro.restauranteId))
         """)
         @Retention(RUNTIME)
