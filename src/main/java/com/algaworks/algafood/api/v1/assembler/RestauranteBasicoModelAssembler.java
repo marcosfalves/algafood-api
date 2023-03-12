@@ -3,6 +3,7 @@ package com.algaworks.algafood.api.v1.assembler;
 import com.algaworks.algafood.api.v1.ApiLinks;
 import com.algaworks.algafood.api.v1.controller.RestauranteController;
 import com.algaworks.algafood.api.v1.model.RestauranteBasicoModel;
+import com.algaworks.algafood.core.security.ApiSecurity;
 import com.algaworks.algafood.domain.model.Restaurante;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class RestauranteBasicoModelAssembler
     @Autowired
     private ApiLinks apiLinks;
 
+    @Autowired
+    private ApiSecurity apiSecurity;
+
     public RestauranteBasicoModelAssembler() {
         super(RestauranteController.class, RestauranteBasicoModel.class);
     }
@@ -29,18 +33,27 @@ public class RestauranteBasicoModelAssembler
         var restauranteModel = createModelWithId(restaurante.getId(), restaurante);
         modelMapper.map(restaurante, restauranteModel);
 
-        restauranteModel.add(
-                apiLinks.linkToRestaurantes(IanaLinkRelations.COLLECTION.value()));
+        if (apiSecurity.podeConsultarRestaurantes()) {
+            restauranteModel.add(
+                    apiLinks.linkToRestaurantes(IanaLinkRelations.COLLECTION.value()));
+        }
 
-        restauranteModel.getCozinha().add(
-                apiLinks.linkToCozinha(restaurante.getCozinha().getId()));
+        if (apiSecurity.podeConsultarCozinhas()) {
+            restauranteModel.getCozinha().add(
+                    apiLinks.linkToCozinha(restaurante.getCozinha().getId()));
+        }
 
         return restauranteModel;
     }
 
     @Override
     public CollectionModel<RestauranteBasicoModel> toCollectionModel(Iterable<? extends Restaurante> entities) {
-        return super.toCollectionModel(entities)
-                .add(apiLinks.linkToRestaurantes());
+        var collectionModel = super.toCollectionModel(entities);
+
+        if (apiSecurity.podeConsultarRestaurantes()) {
+            collectionModel.add(apiLinks.linkToRestaurantes());
+        }
+
+        return collectionModel;
     }
 }

@@ -3,6 +3,7 @@ package com.algaworks.algafood.api.v2.assembler;
 import com.algaworks.algafood.api.v2.ApiLinksV2;
 import com.algaworks.algafood.api.v2.controller.CozinhaControllerV2;
 import com.algaworks.algafood.api.v2.model.CozinhaModelV2;
+import com.algaworks.algafood.core.security.ApiSecurity;
 import com.algaworks.algafood.domain.model.Cozinha;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ public class CozinhaModelAssemblerV2 extends RepresentationModelAssemblerSupport
     @Autowired
     private ApiLinksV2 apiLinks;
 
+    @Autowired
+    private ApiSecurity apiSecurity;
+
     public CozinhaModelAssemblerV2() {
         super(CozinhaControllerV2.class, CozinhaModelV2.class);
     }
@@ -28,7 +32,9 @@ public class CozinhaModelAssemblerV2 extends RepresentationModelAssemblerSupport
         var cozinhaModel = createModelWithId(cozinha.getId(), cozinha);
         modelMapper.map(cozinha, cozinhaModel);
 
-        cozinhaModel.add(apiLinks.linkToCozinhas(IanaLinkRelations.COLLECTION.value()));
+        if (apiSecurity.podeConsultarCozinhas()) {
+            cozinhaModel.add(apiLinks.linkToCozinhas(IanaLinkRelations.COLLECTION.value()));
+        }
 
         return cozinhaModel;
     }

@@ -3,6 +3,7 @@ package com.algaworks.algafood.api.v1.assembler;
 import com.algaworks.algafood.api.v1.ApiLinks;
 import com.algaworks.algafood.api.v1.controller.PedidoController;
 import com.algaworks.algafood.api.v1.model.PedidoModel;
+import com.algaworks.algafood.core.security.ApiSecurity;
 import com.algaworks.algafood.domain.model.Pedido;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ public class PedidoModelAssembler extends RepresentationModelAssemblerSupport<Pe
     @Autowired
     private ApiLinks apiLinks;
 
+    @Autowired
+    private ApiSecurity apiSecurity;
+
     public PedidoModelAssembler() {
         super(PedidoController.class, PedidoModel.class);
     }
@@ -28,35 +32,48 @@ public class PedidoModelAssembler extends RepresentationModelAssemblerSupport<Pe
         var pedidoModel = createModelWithId(pedido.getCodigo(), pedido);
         modelMapper.map(pedido, pedidoModel);
 
-        pedidoModel.add(apiLinks.linkToPedidos(IanaLinkRelations.COLLECTION.value()));
-
-        if (pedido.podeSerConfirmado()) {
-            pedidoModel.add(apiLinks.linkToConfirmacaoPedido(pedido.getCodigo(), "confirmar"));
-        }
-        if (pedido.podeSerEntregue()) {
-            pedidoModel.add(apiLinks.linkToEntregaPedido(pedido.getCodigo(), "entregar"));
-        }
-        if (pedido.podeSerCancelado()) {
-            pedidoModel.add(apiLinks.linkToCancelamentoPedido(pedido.getCodigo(), "cancelar"));
+        if (apiSecurity.podePesquisarPedidos()) {
+            pedidoModel.add(apiLinks.linkToPedidos(IanaLinkRelations.COLLECTION.value()));
         }
 
-        pedidoModel.getRestaurante().add(
-                apiLinks.linkToRestaurante(pedido.getRestaurante().getId()));
+        if (apiSecurity.podeGerenciarPedidos(pedido.getCodigo())) {
+            if (pedido.podeSerConfirmado()) {
+                pedidoModel.add(apiLinks.linkToConfirmacaoPedido(pedido.getCodigo(), "confirmar"));
+            }
+            if (pedido.podeSerEntregue()) {
+                pedidoModel.add(apiLinks.linkToEntregaPedido(pedido.getCodigo(), "entregar"));
+            }
+            if (pedido.podeSerCancelado()) {
+                pedidoModel.add(apiLinks.linkToCancelamentoPedido(pedido.getCodigo(), "cancelar"));
+            }
+        }
 
-        pedidoModel.getCliente().add(
-                apiLinks.linkToUsuario(pedido.getCliente().getId()));
+        if (apiSecurity.podeConsultarRestaurantes()) {
+            pedidoModel.getRestaurante().add(
+                    apiLinks.linkToRestaurante(pedido.getRestaurante().getId()));
 
-        pedidoModel.getFormaPagamento().add(
-                apiLinks.linkToFormaPagamento(pedido.getFormaPagamento().getId()));
+            // Quem pode consultar restaurantes, também pode consultar os produtos dos restaurantes
+            pedidoModel.getItens().forEach(itemPedidoModel ->
+                    itemPedidoModel.add(apiLinks.linkToProduto(
+                            pedido.getRestaurante().getId(), itemPedidoModel.getProdutoId(), "produto")
+                    )
+            );
+        }
 
-        pedidoModel.getEnderecoEntrega().getCidade().add(
-                apiLinks.linkToCidade(pedido.getEnderecoEntrega().getCidade().getId()));
+        if (apiSecurity.podeConsultarControleDeAcesso()) {
+            pedidoModel.getCliente().add(
+                    apiLinks.linkToUsuario(pedido.getCliente().getId()));
+        }
 
-        pedidoModel.getItens().forEach(itemPedidoModel ->
-                itemPedidoModel.add(apiLinks.linkToProduto(
-                        pedido.getRestaurante().getId(), itemPedidoModel.getProdutoId(), "produto")
-                )
-        );
+        if (apiSecurity.podeConsultarFormasPagamento()) {
+            pedidoModel.getFormaPagamento().add(
+                    apiLinks.linkToFormaPagamento(pedido.getFormaPagamento().getId()));
+        }
+
+        if (apiSecurity.podeConsultarCidades()) {
+            pedidoModel.getEnderecoEntrega().getCidade().add(
+                    apiLinks.linkToCidade(pedido.getEnderecoEntrega().getCidade().getId()));
+        }
 
         return pedidoModel;
     }

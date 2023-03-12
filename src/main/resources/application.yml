@@ -39,7 +39,7 @@ spring:
     username: ${SMTP_EMAIL_USUARIO}
     password: ${SMTP_EMAIL_SENHA}
   freemarker:
-    template-loader-path: classpath:templates
+    template-loader-path: classpath:templates/emails/
     content-type: text/html
     charset: UTF-8
     settings:
@@ -48,10 +48,8 @@ spring:
   security:
     oauth2:
       resourceserver:
-        opaquetoken:
-          introspection-uri: "http://auth.algafood.local:8082/oauth/check_token"
-          client-id: checktoken
-          client-secret: check123
+        jwt:
+          jwk-set-uri: http://localhost:8081/.well-known/jwks.json
 
 algafood:
   email:
@@ -76,7 +74,13 @@ algafood:
       token: ${CUSTOMER_TOKEN_LOGGLY}
       apptag: algafood-api
 
-#Separar no profile de prod.
+  jwt:
+    keystore:
+      jks-location: "base64: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"
+      password: "123456"
+      keypair-alias: "algafood"
+
+#TODO Separar no profile de prod.
 #logging:
 #  level:
 #    org:

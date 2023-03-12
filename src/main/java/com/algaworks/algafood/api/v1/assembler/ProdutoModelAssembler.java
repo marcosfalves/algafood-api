@@ -3,6 +3,7 @@ package com.algaworks.algafood.api.v1.assembler;
 import com.algaworks.algafood.api.v1.ApiLinks;
 import com.algaworks.algafood.api.v1.controller.RestauranteProdutoController;
 import com.algaworks.algafood.api.v1.model.ProdutoModel;
+import com.algaworks.algafood.core.security.ApiSecurity;
 import com.algaworks.algafood.domain.model.Produto;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ public class ProdutoModelAssembler extends RepresentationModelAssemblerSupport<P
     @Autowired
     private ApiLinks apiLinks;
 
+    @Autowired
+    private ApiSecurity apiSecurity;
+
     public ProdutoModelAssembler() {
         super(RestauranteProdutoController.class, ProdutoModel.class);
     }
@@ -31,12 +35,14 @@ public class ProdutoModelAssembler extends RepresentationModelAssemblerSupport<P
                 produto.getId(), produto, restauranteId);
         modelMapper.map(produto, produtoModel);
 
-        produtoModel.add(
-                apiLinks.linkToProdutos(restauranteId, IanaLinkRelations.COLLECTION.value()));
+        if (apiSecurity.podeConsultarRestaurantes()) {
+            produtoModel.add(
+                    apiLinks.linkToProdutos(restauranteId, IanaLinkRelations.COLLECTION.value()));
 
-        produtoModel.add(
-                apiLinks.linkToFotoProduto(restauranteId, produto.getId(), "foto")
-        );
+            produtoModel.add(
+                    apiLinks.linkToFotoProduto(restauranteId, produto.getId(), "foto")
+            );
+        }
 
         return produtoModel;
     }

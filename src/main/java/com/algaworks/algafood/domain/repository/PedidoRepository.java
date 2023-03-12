@@ -30,4 +30,6 @@ public interface PedidoRepository extends CustomJpaRepository<Pedido, Long>, Jpa
            join fetch r.cozinha
            """)
     List<Pedido> findAll();
+
+    boolean isPedidoGerenciadoPor(String codigoPedido, Long usuarioId);
 }

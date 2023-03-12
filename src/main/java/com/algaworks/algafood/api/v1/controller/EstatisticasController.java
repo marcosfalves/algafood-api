@@ -2,6 +2,7 @@ package com.algaworks.algafood.api.v1.controller;
 
 import com.algaworks.algafood.api.v1.ApiLinks;
 import com.algaworks.algafood.api.v1.openapi.controller.EstatisticasControllerOpenApi;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.filter.VendaDiariaFilter;
 import com.algaworks.algafood.domain.model.dto.VendaDiaria;
 import com.algaworks.algafood.domain.service.VendaQueryService;
@@ -32,6 +33,7 @@ public class EstatisticasController implements EstatisticasControllerOpenApi {
     @Autowired
     private ApiLinks apiLinks;
 
+    @CheckSecurity.Estatisticas.PodeConsultar
     @Override
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public EstatisticasModel estatisticas() {
@@ -45,12 +47,14 @@ public class EstatisticasController implements EstatisticasControllerOpenApi {
     public static class EstatisticasModel extends RepresentationModel<EstatisticasModel> {
     }
 
+    @CheckSecurity.Estatisticas.PodeConsultar
     @GetMapping(path = "/vendas-diarias", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<VendaDiaria> consultarVendasDiarias(VendaDiariaFilter filtro,
                                                     @RequestParam(defaultValue = "+00:00") ZoneOffset zoneOffset){
         return vendaQueryService.consultarVendasDiarias(filtro, zoneOffset);
     }
 
+    @CheckSecurity.Estatisticas.PodeConsultar
     @GetMapping(path = "/vendas-diarias", produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<byte[]> consultarVendasDiariasPdf(VendaDiariaFilter filtro,
                                                             @RequestParam(defaultValue = "+00:00") ZoneOffset zoneOffset){
