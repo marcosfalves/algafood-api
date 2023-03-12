@@ -49,10 +49,15 @@ import springfox.documentation.builders.ResponseBuilder;
 import springfox.documentation.schema.AlternateTypeRule;
 import springfox.documentation.schema.AlternateTypeRules;
 import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.AuthorizationScope;
 import springfox.documentation.service.Contact;
+import springfox.documentation.service.OAuth2Scheme;
 import springfox.documentation.service.Response;
+import springfox.documentation.service.SecurityReference;
+import springfox.documentation.service.SecurityScheme;
 import springfox.documentation.service.Tag;
 import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.json.JacksonModuleRegistrar;
 import springfox.documentation.spring.web.plugins.Docket;
 
@@ -98,6 +103,8 @@ public class SpringFoxConfig {
                         buildCollectionModelTypeRole(ProdutoModel.class, ProdutoCollectionModelOpenApi.class),
                         buildCollectionModelTypeRole(UsuarioModel.class, UsuarioCollectionModelOpenApi.class),
                         buildCollectionModelTypeRole(RestauranteBasicoModel.class, RestauranteBasicoCollectionModelOpenApi.class))
+                .securitySchemes(Arrays.asList(securityScheme()))
+                .securityContexts(Arrays.asList(securityContext()))
                 .apiInfo(apiInfoV1())
                 .tags(new Tag("Cidades", "Gerencia as Cidades"),
                         new Tag("Grupos", "Gerencia os grupos de usuários"),
@@ -133,9 +140,36 @@ public class SpringFoxConfig {
                 .alternateTypeRules(
                         buildPagedModelTypeRole(CozinhaModelV2.class, CozinhaCollectionModelV2OpenApi.class),
                         buildCollectionModelTypeRole(CidadeModelV2.class, CidadeCollectionModelV2OpenApi.class))
+                .securitySchemes(Arrays.asList(securityScheme()))
+                .securityContexts(Arrays.asList(securityContext()))
                 .apiInfo(apiInfoV2())
                 .tags(new Tag("Cidades", "Gerencia as Cidades"),
                         new Tag("Cozinhas", "Gerencia as cozinhas"));
+    }
+
+    private SecurityScheme securityScheme() {
+        return OAuth2Scheme.OAUTH2_PASSWORD_FLOW_BUILDER
+                .name("AlgaFood")
+                .scopes(scopes())
+                .tokenUrl("/oauth/token")
+                .build();
+    }
+
+    private SecurityContext securityContext() {
+        var securityReference = SecurityReference.builder()
+                .reference("AlgaFood")
+                .scopes(scopes().toArray(new AuthorizationScope[0]))
+                .build();
+
+        return SecurityContext.builder()
+                .securityReferences(Arrays.asList(securityReference))
+                .operationSelector(operationContext -> true)
+                .build();
+    }
+
+    private List<AuthorizationScope> scopes() {
+        return Arrays.asList(new AuthorizationScope("READ", "Acesso de leitura"),
+                new AuthorizationScope("WRITE", "Acesso de gravação"));
     }
 
     @Bean
