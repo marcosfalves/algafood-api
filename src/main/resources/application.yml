@@ -39,7 +39,7 @@ spring:
     username: ${SMTP_EMAIL_USUARIO}
     password: ${SMTP_EMAIL_SENHA}
   freemarker:
-    template-loader-path: classpath:templates
+    template-loader-path: classpath:templates/emails/
     content-type: text/html
     charset: UTF-8
     settings:
