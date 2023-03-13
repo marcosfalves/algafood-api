@@ -2,7 +2,9 @@ FROM eclipse-temurin:17.0.6_10-jre
 
 WORKDIR /app
 
-COPY target/*.jar /app/algafood.jar
+ARG JAR_FILE
+
+COPY target/${JAR_FILE} /app/algafood.jar
 
 EXPOSE 8080
 

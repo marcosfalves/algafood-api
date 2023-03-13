@@ -23,6 +23,7 @@
 		<mysql-connector-java.version>8.0.30</mysql-connector-java.version>
 		<spring-security-oauth2.version>2.5.2.RELEASE</spring-security-oauth2.version>
 		<spring-security-jwt.version>1.0.11.RELEASE</spring-security-jwt.version>
+		<dockerfile-maven-version>1.4.13</dockerfile-maven-version>
 	</properties>
 	<dependencies>
 		<!-- Spring	-->
@@ -188,5 +189,36 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>docker</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.spotify</groupId>
+						<artifactId>dockerfile-maven-plugin</artifactId>
+						<version>${dockerfile-maven-version}</version>
+						<executions>
+							<execution>
+								<id>default</id>
+								<goals>
+									<goal>build</goal>
+									<goal>push</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<repository>algafood-api</repository>
+<!--							<tag>${project.version}</tag>-->
+							<buildArgs>
+								<JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
+							</buildArgs>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 </project>
