@@ -26,6 +26,7 @@ services:
 
   algafood-api:
     image: marcosfalves/algafood-api
+    command: ["/wait-for-it.sh", "algafood-mysql:3306", "-t", "30", "--", "java", "-jar", "algafood.jar"]
     environment:
       - DB_HOST=algafood-mysql
     ports:
