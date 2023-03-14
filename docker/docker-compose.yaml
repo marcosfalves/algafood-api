@@ -24,6 +24,12 @@ services:
     volumes:
       - db-data:/var/lib/mysql
 
+  algafood-redis:
+    image: redis:6.2.1-alpine
+    restart: always
+    networks:
+      - algafood-network
+
   algafood-api:
     image: marcosfalves/algafood-api
     command: ["/wait-for-it.sh", "algafood-mysql:3306", "-t", "30", "--", "java", "-jar", "algafood.jar"]
