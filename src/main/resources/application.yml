@@ -19,6 +19,15 @@ spring:
     hikari:
       max-lifetime: 900000
 
+  data:
+    redis:
+      repositories:
+        enabled: false
+
+  redis:
+    host: localhost
+    port: 6379
+
   session:
     store-type: none
 
