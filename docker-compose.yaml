@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.9"
 
 services:
     db-mysql:
@@ -14,5 +14,12 @@ services:
         - "3306:3306"
       volumes:
         - db-data:/var/lib/mysql
+
+    redis:
+      image: redis:6.2.11-alpine
+      restart: always
+      ports:
+        - "6379:6379"
+
 volumes:
   db-data:

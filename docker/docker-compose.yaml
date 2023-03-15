@@ -1,0 +1,53 @@
+version: "3.9"
+
+networks:
+  algafood-network:
+    driver: bridge
+
+volumes:
+  db-data:
+
+services:
+  algafood-mysql:
+    image: mysql:8.0.30
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=1234
+    #        - MYSQL_DATABASE=testdb
+    #        - MYSQL_USER=admin
+    #        - MYSQL_PASSWORD=root
+    ports:
+      - "3306:3306"
+    networks:
+      - algafood-network
+    volumes:
+      - db-data:/var/lib/mysql
+
+  algafood-redis:
+    image: redis:6.2.11-alpine
+    restart: always
+    networks:
+      - algafood-network
+
+  algafood-api:
+    image: marcosfalves/algafood-api
+    command: ["/wait-for-it.sh", "algafood-mysql:3306", "-t", "30", "--", "java", "-jar", "algafood.jar"]
+    environment:
+      - DB_HOST=algafood-mysql
+      - SPRING_SESSION_STORE_TYPE=redis
+      - SPRING_REDIS_HOST=algafood-redis
+    networks:
+      - algafood-network
+    depends_on:
+      - algafood-mysql
+
+  algafood-proxy:
+    build: ../nginx
+    image: algafood-proxy
+    ports:
+      - "80:80"
+    networks:
+      - algafood-network
+    depends_on:
+      - algafood-api
