@@ -20,6 +20,7 @@ public class Base64ProtocolResolver implements ProtocolResolver,
     @Override
     public Resource resolve(String location, ResourceLoader resourceLoader) {
         if (location.startsWith("base64:")) {
+            location = location.replaceAll("\n", "");
             byte[] decodedResource = Base64.getDecoder().decode(location.substring(7));
             return new ByteArrayResource(decodedResource);
         }
