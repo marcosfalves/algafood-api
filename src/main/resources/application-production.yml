@@ -9,11 +9,6 @@ spring:
     port: ${REDIS_PORT}
     password: ${REDIS_PASSWORD}
 
-  logging:
-    loggly:
-      token: ${CUSTOMER_TOKEN_LOGGLY}
-      apptag: algafood-api
-
   mail:
     host: ${SMTP_EMAIL_HOST}
     port: ${SMTP_EMAIL_PORT}
@@ -21,6 +16,11 @@ spring:
     password: ${SMTP_EMAIL_PASSWORD}
 
 algafood:
+  logging:
+    loggly:
+      token: ${CUSTOMER_TOKEN_LOGGLY}
+      apptag: algafood-api
+
   email:
     impl: smtp
     remetente: AlgaFood <marquinhofalves@gmail.com>
