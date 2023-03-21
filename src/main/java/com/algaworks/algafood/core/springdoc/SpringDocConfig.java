@@ -1,0 +1,36 @@
+package com.algaworks.algafood.core.springdoc;
+
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Contact;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class SpringDocConfig {
+
+    @Bean
+    public OpenAPI openAPI() {
+        return new OpenAPI()
+                .info(buildAppInfo());
+    }
+
+    private Info buildAppInfo() {
+        var licence = new License()
+                .name("Apache 2.0")
+                .url("http://springdoc.com");
+
+        var contact = new Contact()
+                .name("Marcos F. Alves")
+                .email("marcosf_alves@outlook.com")
+                .url("https://github.com/marcosfalves");
+
+        return new Info()
+                .title("AlgaFood API")
+                .version("v1")
+                .description("REST API aberta para clientes e restaurantes")
+                .license(licence)
+                .contact(contact);
+    }
+}
