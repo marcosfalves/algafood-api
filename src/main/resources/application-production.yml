@@ -1,0 +1,51 @@
+spring:
+  datasource:
+    url: "jdbc:mysql://${DB_HOST}/algafood?createDatabaseIfNotExist=true&serverTimezone=UTC"
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+
+  redis:
+    host: ${REDIS_HOST}
+    port: ${REDIS_PORT}
+    password: ${REDIS_PASSWORD}
+
+  mail:
+    host: ${SMTP_EMAIL_HOST}
+    port: ${SMTP_EMAIL_PORT}
+    username: ${SMTP_EMAIL_USER}
+    password: ${SMTP_EMAIL_PASSWORD}
+
+algafood:
+  logging:
+    loggly:
+      token: ${CUSTOMER_TOKEN_LOGGLY}
+      apptag: algafood-api
+
+  email:
+    impl: smtp
+    remetente: AlgaFood <marquinhofalves@gmail.com>
+
+  storage:
+    tipo: s3
+    s3:
+      id-chave-acesso: ${AWS_S3_ACCESS_KEY}
+      chave-acesso-secreta: ${AWS_S3_SECRET_KEY}
+      bucket: ${AWS_S3_BUCKET_NAME}
+      regiao: ${AWS_S3_REGION}
+      diretorio-fotos: product-photos
+
+  jwt:
+    keystore:
+      jks-location: ${JKS_BASE64}
+      password: ${KEYSTORE_PASSWORD}
+      keypair-alias: ${KEYSTORE_ALIAS}
+
+logging:
+  level:
+    org:
+      hibernate: error
+      springframework:
+        web: debug
+        servlet:
+          view:
+            freemarker: warn

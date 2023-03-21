@@ -8,7 +8,7 @@ create table pedido (
     usuario_cliente_id bigint not null,
     forma_pagamento_id bigint not null,
 
-	endereco_cidade_id bigint(20) not null,
+	endereco_cidade_id bigint not null,
 	endereco_cep varchar(9) not null,
 	endereco_logradouro varchar(100) not null,
 	endereco_numero varchar(20) not null,
@@ -27,7 +27,7 @@ create table pedido (
 
 create table item_pedido (
     id bigint not null auto_increment,
-    quantidade smallint(6) not null,
+    quantidade smallint not null,
     preco_unitario decimal(10,2) not null,
     preco_total decimal(10,2) not null,
     observacao varchar(255),

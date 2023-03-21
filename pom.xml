@@ -20,7 +20,7 @@
 		<aws-java-sdk-s3.version>1.12.385</aws-java-sdk-s3.version>
 		<springfox.version>3.0.0</springfox.version>
 		<logback-ext-loggly.version>0.1.5</logback-ext-loggly.version>
-		<mysql-connector-java.version>8.0.30</mysql-connector-java.version>
+		<mysql-connector-java.version>8.0.32</mysql-connector-java.version>
 		<spring-security-oauth2.version>2.5.2.RELEASE</spring-security-oauth2.version>
 		<spring-security-jwt.version>1.0.11.RELEASE</spring-security-jwt.version>
 		<dockerfile-maven-version>1.4.13</dockerfile-maven-version>
@@ -218,7 +218,7 @@
 							</execution>
 						</executions>
 						<configuration>
-							<repository>marcosfalves/algafood-api</repository>
+							<repository>algafood-api</repository>
 <!--							<tag>${project.version}</tag>-->
 							<buildArgs>
 								<JAR_FILE>${project.build.finalName}.jar</JAR_FILE>

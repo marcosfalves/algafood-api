@@ -9,7 +9,7 @@ volumes:
 
 services:
   algafood-mysql:
-    image: mysql:8.0.30
+    image: mysql:8.0.32
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     environment:
@@ -18,7 +18,7 @@ services:
     #        - MYSQL_USER=admin
     #        - MYSQL_PASSWORD=root
     ports:
-      - "3306:3306"
+      - "13306:3306"
     networks:
       - algafood-network
     volumes:
@@ -34,6 +34,7 @@ services:
     image: marcosfalves/algafood-api
     command: ["/wait-for-it.sh", "algafood-mysql:3306", "-t", "30", "--", "java", "-jar", "algafood.jar"]
     environment:
+      - SPRING_PROFILES_ACTIVE=development
       - DB_HOST=algafood-mysql
       - SPRING_SESSION_STORE_TYPE=redis
       - SPRING_REDIS_HOST=algafood-redis

@@ -16,6 +16,7 @@ public class SanboxEnvioEmailService extends SmtpEnvioEmailService {
     protected MimeMessage criarMimeMessage(Mensagem mensagem) throws MessagingException {
         MimeMessage mimeMessage = super.criarMimeMessage(mensagem);
 
+
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "UTF-8");
         helper.setTo(emailProperties.getSandbox().getDestinatario());
 
