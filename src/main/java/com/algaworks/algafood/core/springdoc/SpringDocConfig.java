@@ -9,8 +9,12 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.tags.Tag;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @SecurityScheme(name = "security_auth", type = SecuritySchemeType.OAUTH2,
@@ -29,7 +33,8 @@ public class SpringDocConfig {
     @Bean
     public OpenAPI openAPI() {
         return new OpenAPI()
-                .info(buildAppInfo());
+                .info(buildAppInfo())
+                .tags(buildTags());
     }
 
     private Info buildAppInfo() {
@@ -48,5 +53,11 @@ public class SpringDocConfig {
                 .description("REST API aberta para clientes e restaurantes")
                 .license(licence)
                 .contact(contact);
+    }
+
+    private List<Tag> buildTags() {
+        return Arrays.asList(
+          new Tag().name("Cidades").description("Gerencia as cidades")
+        );
     }
 }
