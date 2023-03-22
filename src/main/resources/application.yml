@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: ${SERVER_PORT:8081}
   forward-headers-strategy: framework
 
 spring:
@@ -54,8 +54,17 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://localhost:8081/.well-known/jwks.json
+          jwk-set-uri: "http://localhost:${SERVER_PORT:8081}/.well-known/jwks.json"
 
 springdoc:
   packages-to-scan: com.algaworks.algafood.api
   paths-to-match: /v1/**
+  swagger-ui:
+    oauth:
+      client-id: algafood-web
+      client-secret: web123
+      use-pkce-with-authorization-code-grant: true
+  algafood:
+    oauth-flow:
+      authorization-url: "http://localhost:${SERVER_PORT:8081}/oauth/authorize"
+      token-url: "http://localhost:${SERVER_PORT:8081}/oauth/token"
