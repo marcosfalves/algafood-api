@@ -9,7 +9,9 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.tags.Tag;
+import org.springdoc.core.customizers.OpenApiCustomiser;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -35,6 +37,25 @@ public class SpringDocConfig {
         return new OpenAPI()
                 .info(buildAppInfo())
                 .tags(buildTags());
+    }
+
+    @Bean
+    public OpenApiCustomiser openApiCustomiser() {
+        return openApi -> openApi.getPaths()
+                .values()
+                .stream()
+                .flatMap(pathItem -> pathItem.readOperations().stream())
+                .forEach(operation -> {
+                    var responses = operation.getResponses();
+
+                    var apiResponseNotFound = new ApiResponse().description("Recurso não encontrado");
+                    var apiResponseNotAcceptable = new ApiResponse().description("Recurso não possui representação que poderia ser aceita pelo consumidor");
+                    var apiResponseInternalServerError = new ApiResponse().description("Erro interno no servidor");
+
+                    responses.addApiResponse("404", apiResponseNotFound);
+                    responses.addApiResponse("406", apiResponseNotAcceptable);
+                    responses.addApiResponse("500", apiResponseInternalServerError);
+                });
     }
 
     private Info buildAppInfo() {
