@@ -1,14 +1,18 @@
 package com.algaworks.algafood.core.springdoc;
 
+import com.algaworks.algafood.api.exceptionhandler.Problem;
+import io.swagger.v3.core.converter.ModelConverters;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.OAuthFlow;
 import io.swagger.v3.oas.annotations.security.OAuthFlows;
 import io.swagger.v3.oas.annotations.security.OAuthScope;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.responses.ApiResponses;
 import io.swagger.v3.oas.models.tags.Tag;
@@ -40,7 +44,10 @@ public class SpringDocConfig {
     public OpenAPI openAPI() {
         return new OpenAPI()
                 .info(buildAppInfo())
-                .tags(buildTags());
+                .tags(buildTags())
+                .components(new Components().schemas(
+                        buildSchemas()
+                ));
     }
 
     @Bean
@@ -87,6 +94,18 @@ public class SpringDocConfig {
         return Arrays.asList(
           new Tag().name("Cidades").description("Gerencia as cidades")
         );
+    }
+
+    private Map<String, Schema> buildSchemas() {
+        final Map<String, Schema> schemaMap = new HashMap<>();
+
+        var problemSchema = ModelConverters.getInstance().read(Problem.class);
+        var problemObjectSchema = ModelConverters.getInstance().read(Problem.Object.class);
+
+        schemaMap.putAll(problemSchema);
+        schemaMap.putAll(problemObjectSchema);
+
+        return schemaMap;
     }
 
     private void globalGetResponseMessages(ApiResponses responses) {

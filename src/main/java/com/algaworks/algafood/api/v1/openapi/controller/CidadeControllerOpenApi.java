@@ -22,7 +22,7 @@ public interface CidadeControllerOpenApi {
             responses = {
                     @ApiResponse(responseCode = "200"),
                     @ApiResponse(responseCode = "400", description = "ID da cidade é inválido",
-                            content = @Content(schema = @Schema))
+                            content = @Content(schema = @Schema(ref = "Problema")))
             })
     CidadeModel buscar(@Parameter(description = "ID de uma cidade", example = "1", required = true) Long cidadeId);
 
