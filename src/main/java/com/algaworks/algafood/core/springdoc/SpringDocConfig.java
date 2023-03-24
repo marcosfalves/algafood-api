@@ -10,13 +10,17 @@ import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.responses.ApiResponse;
+import io.swagger.v3.oas.models.responses.ApiResponses;
 import io.swagger.v3.oas.models.tags.Tag;
 import org.springdoc.core.customizers.OpenApiCustomiser;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Configuration
 @SecurityScheme(name = "security_auth", type = SecuritySchemeType.OAUTH2,
@@ -43,19 +47,22 @@ public class SpringDocConfig {
     public OpenApiCustomiser openApiCustomiser() {
         return openApi -> openApi.getPaths()
                 .values()
-                .stream()
-                .flatMap(pathItem -> pathItem.readOperations().stream())
-                .forEach(operation -> {
-                    var responses = operation.getResponses();
+                .forEach(pathItem -> pathItem.readOperationsMap()
+                        .forEach(((httpMethod, operation) -> {
+                            var responses = operation.getResponses();
 
-                    var apiResponseNotFound = new ApiResponse().description("Recurso não encontrado");
-                    var apiResponseNotAcceptable = new ApiResponse().description("Recurso não possui representação que poderia ser aceita pelo consumidor");
-                    var apiResponseInternalServerError = new ApiResponse().description("Erro interno no servidor");
+                            var hasRequestBody = operation.getRequestBody() != null;
+                            var hasResponseBody = responses.get("204") == null;
 
-                    responses.addApiResponse("404", apiResponseNotFound);
-                    responses.addApiResponse("406", apiResponseNotAcceptable);
-                    responses.addApiResponse("500", apiResponseInternalServerError);
-                });
+                            switch (httpMethod){
+                                case GET -> globalGetResponseMessages(responses);
+                                case POST -> globalPostResponseMessages(responses);
+                                case PUT -> globalPutResponseMessages(responses, hasRequestBody, hasResponseBody);
+                                case DELETE -> globalDeleteResponseMessages(responses);
+                            }
+
+                        }))
+                );
     }
 
     private Info buildAppInfo() {
@@ -79,6 +86,76 @@ public class SpringDocConfig {
     private List<Tag> buildTags() {
         return Arrays.asList(
           new Tag().name("Cidades").description("Gerencia as cidades")
+        );
+    }
+
+    private void globalGetResponseMessages(ApiResponses responses) {
+        buildResponseMessagesHttpStatusAccepted(
+                responses,
+                Arrays.asList(
+                        HttpStatus.NOT_FOUND,
+                        HttpStatus.NOT_ACCEPTABLE,
+                        HttpStatus.INTERNAL_SERVER_ERROR
+                ));
+    }
+
+    private void globalPostResponseMessages(ApiResponses responses) {
+        buildResponseMessagesHttpStatusAccepted(
+                responses,
+                Arrays.asList(
+                        HttpStatus.BAD_REQUEST,
+                        HttpStatus.NOT_ACCEPTABLE,
+                        HttpStatus.UNSUPPORTED_MEDIA_TYPE,
+                        HttpStatus.INTERNAL_SERVER_ERROR
+                ));
+    }
+
+    private void globalPutResponseMessages(ApiResponses responses, boolean hasRequestBody, boolean hasResponseBody) {
+        buildResponseMessagesHttpStatusAccepted(
+                responses,
+                Arrays.asList(
+                        HttpStatus.BAD_REQUEST,
+                        HttpStatus.NOT_FOUND,
+                        HttpStatus.INTERNAL_SERVER_ERROR
+                ));
+
+        if (hasRequestBody) {
+            buildResponseMessagesHttpStatusAccepted(
+                    responses,
+                    Arrays.asList(
+                            HttpStatus.UNSUPPORTED_MEDIA_TYPE
+                    ));
+        }
+
+        if (hasResponseBody) {
+            buildResponseMessagesHttpStatusAccepted(
+                    responses,
+                    Arrays.asList(
+                            HttpStatus.NOT_ACCEPTABLE
+                    ));
+        }
+    }
+
+    private void globalDeleteResponseMessages(ApiResponses responses) {
+        buildResponseMessagesHttpStatusAccepted(
+                responses,
+                Arrays.asList(
+                        HttpStatus.BAD_REQUEST,
+                        HttpStatus.NOT_FOUND,
+                        HttpStatus.INTERNAL_SERVER_ERROR
+                ));
+    }
+
+    private void buildResponseMessagesHttpStatusAccepted(ApiResponses responses, List<HttpStatus> httpStatusAccepted) {
+        Map<HttpStatus, ApiResponse> messages = new HashMap<>();
+        messages.put(HttpStatus.INTERNAL_SERVER_ERROR, new ApiResponse().description("Erro interno no servidor"));
+        messages.put(HttpStatus.BAD_REQUEST, new ApiResponse().description("Requisição inválida (erro do cliente)"));
+        messages.put(HttpStatus.NOT_FOUND, new ApiResponse().description("Recurso não encontrado"));
+        messages.put(HttpStatus.NOT_ACCEPTABLE, new ApiResponse().description("Recurso não possui representação que poderia ser aceita pelo consumidor"));
+        messages.put(HttpStatus.UNSUPPORTED_MEDIA_TYPE, new ApiResponse().description("Requisição recusada porque o corpo está em um formato não suportado"));
+
+        httpStatusAccepted.forEach(httpStatus ->
+                responses.addApiResponse(String.valueOf(httpStatus.value()), messages.get(httpStatus))
         );
     }
 }
