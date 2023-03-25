@@ -104,7 +104,8 @@ public class SpringDocConfig {
     private List<Tag> buildTags() {
         return Arrays.asList(
           new Tag().name("Cidades").description("Gerencia as cidades"),
-          new Tag().name("Grupos").description("Gerencia os grupos de usuário")
+          new Tag().name("Grupos").description("Gerencia os grupos de usuário"),
+          new Tag().name("Cozinhas").description("Gerencia as cozinhas")
         );
     }
 
