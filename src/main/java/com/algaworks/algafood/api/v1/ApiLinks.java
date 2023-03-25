@@ -24,7 +24,6 @@ import org.springframework.hateoas.TemplateVariable.VariableType;
 import org.springframework.hateoas.TemplateVariables;
 import org.springframework.hateoas.UriTemplate;
 import org.springframework.stereotype.Component;
-import org.springframework.web.HttpMediaTypeNotAcceptableException;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -268,13 +267,9 @@ public class ApiLinks {
     }
 
     public Link linkToFotoProduto(Long restauranteId, Long produtoId, String relation) {
-        try {
-            return linkTo(
-                    methodOn(RestauranteProdutoFotoController.class).buscar(restauranteId, produtoId, null)
-            ).withRel(relation);
-        } catch (HttpMediaTypeNotAcceptableException e) {
-            throw new RuntimeException(e);
-        }
+        return linkTo(
+                methodOn(RestauranteProdutoFotoController.class).buscar(restauranteId, produtoId)
+        ).withRel(relation);
     }
 
     public Link linkToFotoProduto(Long restauranteId, Long produtoId) {
