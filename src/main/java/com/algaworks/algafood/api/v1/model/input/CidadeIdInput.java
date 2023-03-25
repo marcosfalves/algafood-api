@@ -9,7 +9,6 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 public class CidadeIdInput {
-
     @Schema(example = "1")
     @NotNull
     private Long id;
