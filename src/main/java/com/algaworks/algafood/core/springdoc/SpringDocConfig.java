@@ -12,6 +12,8 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.media.Content;
+import io.swagger.v3.oas.models.media.MediaType;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.responses.ApiResponses;
@@ -25,6 +27,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Configuration
 @SecurityScheme(name = "security_auth", type = SecuritySchemeType.OAUTH2,
@@ -40,14 +44,21 @@ import java.util.Map;
 )
 public class SpringDocConfig {
 
+    private static final String badRequestResponse = "BadRequestResponse";
+    private static final String badRequestInvalidParamResponse = "BadRequestInvalidParamResponse";
+    private static final String notFoundResponse = "NotFoundResponse";
+    private static final String unsupportedMediaTypeResponse = "UnsupportedMediaTypeResponse";
+    private static final String internalServerErrorResponse = "InternalServerErrorResponse";
+
     @Bean
     public OpenAPI openAPI() {
         return new OpenAPI()
                 .info(buildAppInfo())
                 .tags(buildTags())
-                .components(new Components().schemas(
-                        buildSchemas()
-                ));
+                .components(new Components()
+                        .schemas(buildSchemas())
+                        .responses(buildGlobalApiResponses())
+                );
     }
 
     @Bean
@@ -108,7 +119,40 @@ public class SpringDocConfig {
         return schemaMap;
     }
 
+    private Map<String, ApiResponse> buildGlobalApiResponses() {
+        final Map<String, ApiResponse> apiResponseMap = new HashMap<>();
+
+        var content = new Content()
+                .addMediaType(APPLICATION_JSON_VALUE,
+                        new MediaType().schema(new Schema<Problem>().$ref("Problema")));
+
+        apiResponseMap.put(badRequestResponse, new ApiResponse()
+                .description("Requisição inválida (erro do cliente)")
+                .content(content));
+
+        apiResponseMap.put(badRequestInvalidParamResponse, new ApiResponse()
+                .description("Parâmetro informado possui formato inválido")
+                .content(content));
+
+        apiResponseMap.put(notFoundResponse, new ApiResponse()
+                .description("Recurso não encontrado")
+                .content(content));
+
+        apiResponseMap.put(unsupportedMediaTypeResponse, new ApiResponse()
+                .description("Requisição recusada porque o corpo está em um formato não suportado")
+                .content(content));
+
+        apiResponseMap.put(internalServerErrorResponse, new ApiResponse()
+                .description("Erro interno no servidor")
+                .content(content));
+
+        return apiResponseMap;
+    }
+
     private void globalGetResponseMessages(ApiResponses responses) {
+        //Utilizado direto nos controllers para forçar carregar o Schema
+        //responses.addApiResponse("400", new ApiResponse().$ref(badRequestInvalidParamResponse));
+
         buildResponseMessagesHttpStatusAccepted(
                 responses,
                 Arrays.asList(
@@ -167,11 +211,11 @@ public class SpringDocConfig {
 
     private void buildResponseMessagesHttpStatusAccepted(ApiResponses responses, List<HttpStatus> httpStatusAccepted) {
         Map<HttpStatus, ApiResponse> messages = new HashMap<>();
-        messages.put(HttpStatus.INTERNAL_SERVER_ERROR, new ApiResponse().description("Erro interno no servidor"));
-        messages.put(HttpStatus.BAD_REQUEST, new ApiResponse().description("Requisição inválida (erro do cliente)"));
-        messages.put(HttpStatus.NOT_FOUND, new ApiResponse().description("Recurso não encontrado"));
+        messages.put(HttpStatus.INTERNAL_SERVER_ERROR, new ApiResponse().$ref(internalServerErrorResponse));
+        messages.put(HttpStatus.BAD_REQUEST, new ApiResponse().$ref(badRequestResponse));
+        messages.put(HttpStatus.NOT_FOUND, new ApiResponse().$ref(notFoundResponse));
         messages.put(HttpStatus.NOT_ACCEPTABLE, new ApiResponse().description("Recurso não possui representação que poderia ser aceita pelo consumidor"));
-        messages.put(HttpStatus.UNSUPPORTED_MEDIA_TYPE, new ApiResponse().description("Requisição recusada porque o corpo está em um formato não suportado"));
+        messages.put(HttpStatus.UNSUPPORTED_MEDIA_TYPE, new ApiResponse().$ref(unsupportedMediaTypeResponse));
 
         httpStatusAccepted.forEach(httpStatus ->
                 responses.addApiResponse(String.valueOf(httpStatus.value()), messages.get(httpStatus))
