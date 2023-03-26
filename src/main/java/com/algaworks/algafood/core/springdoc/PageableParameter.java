@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
 @Parameter(
         in = ParameterIn.QUERY,
         name = "page",
-        description = "Número da página (0..N)",
+        description = "Número da página iniciado em zero (0..N)",
         schema = @Schema(type = "integer", defaultValue = "0")
 )
 @Parameter(
@@ -28,7 +28,7 @@ import java.lang.annotation.Target;
 @Parameter(
         in = ParameterIn.QUERY,
         name = "sort",
-        description = "Critério de ordenação: propriedade(,asc|,desc)",
+        description = "Critério de ordenação no formato: propriedade,(asc|desc). A ordem padrão é crescente. Vários critérios de ordenação são suportados.",
         examples = {
                 @ExampleObject("nome"),
                 @ExampleObject("nome,asc"),
