@@ -75,7 +75,7 @@ public class SpringDocConfig {
                             switch (httpMethod){
                                 case GET -> globalGetResponseMessages(responses);
                                 case POST -> globalPostResponseMessages(responses);
-                                case PUT -> globalPutResponseMessages(responses, hasRequestBody, hasResponseBody);
+                                case PUT, PATCH  -> globalPutResponseMessages(responses, hasRequestBody, hasResponseBody);
                                 case DELETE -> globalDeleteResponseMessages(responses);
                             }
 
@@ -107,7 +107,8 @@ public class SpringDocConfig {
           new Tag().name("Grupos").description("Gerencia os grupos de usuário"),
           new Tag().name("Cozinhas").description("Gerencia as cozinhas"),
           new Tag().name("Formas de Pagamento").description("Gerencia as formas de pagamento"),
-          new Tag().name("Pedidos").description("Gerencia os pedidos")
+          new Tag().name("Pedidos").description("Gerencia os pedidos"),
+          new Tag().name("Restaurantes").description("Gerencia os restaurantes")
         );
     }
 
