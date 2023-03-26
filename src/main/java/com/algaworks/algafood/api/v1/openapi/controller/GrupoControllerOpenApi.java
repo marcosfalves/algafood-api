@@ -22,6 +22,8 @@ public interface GrupoControllerOpenApi {
             responses = {
                     @ApiResponse(responseCode = "200"),
                     @ApiResponse(responseCode = "400", description = "ID do grupo é inválido",
+                            content = @Content(schema = @Schema(ref = "Problema"))),
+                    @ApiResponse(responseCode = "404", description = "Grupo não encontrado",
                             content = @Content(schema = @Schema(ref = "Problema")))
             })
     GrupoModel buscar(@Parameter(description = "ID de um grupo", example = "1", required = true) Long grupoId);

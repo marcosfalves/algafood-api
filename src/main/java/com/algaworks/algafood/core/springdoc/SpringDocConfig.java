@@ -108,7 +108,8 @@ public class SpringDocConfig {
           new Tag().name("Cozinhas").description("Gerencia as cozinhas"),
           new Tag().name("Formas de Pagamento").description("Gerencia as formas de pagamento"),
           new Tag().name("Pedidos").description("Gerencia os pedidos"),
-          new Tag().name("Restaurantes").description("Gerencia os restaurantes")
+          new Tag().name("Restaurantes").description("Gerencia os restaurantes"),
+          new Tag().name("Estados").description("Gerencia os estados")
         );
     }
 
@@ -161,7 +162,6 @@ public class SpringDocConfig {
         buildResponseMessagesHttpStatusAccepted(
                 responses,
                 Arrays.asList(
-                        HttpStatus.NOT_FOUND,
                         HttpStatus.NOT_ACCEPTABLE,
                         HttpStatus.INTERNAL_SERVER_ERROR
                 ));

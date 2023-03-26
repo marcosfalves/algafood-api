@@ -43,6 +43,8 @@ public interface RestauranteControllerOpenApi {
             responses = {
                     @ApiResponse(responseCode = "200"),
                     @ApiResponse(responseCode = "400", description = "ID do restaurante é inválido",
+                            content = @Content(schema = @Schema(ref = "Problema"))),
+                    @ApiResponse(responseCode = "404", description = "Restaurante não encontrado",
                             content = @Content(schema = @Schema(ref = "Problema")))
             })
     RestauranteModel buscar(@Parameter(description = "ID de um restaurante", example = "1", required = true) Long restauranteId);

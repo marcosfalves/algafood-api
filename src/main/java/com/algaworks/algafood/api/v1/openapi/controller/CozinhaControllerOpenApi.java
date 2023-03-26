@@ -25,6 +25,8 @@ public interface CozinhaControllerOpenApi {
             responses = {
                     @ApiResponse(responseCode = "200"),
                     @ApiResponse(responseCode = "400", description = "ID da cozinha é inválido",
+                            content = @Content(schema = @Schema(ref = "Problema"))),
+                    @ApiResponse(responseCode = "404", description = "Cozinha não encontrada",
                             content = @Content(schema = @Schema(ref = "Problema")))
             })
     CozinhaModel buscar(@Parameter(description = "ID de uma cozinha", example = "1", required = true) Long cozinhaId);
