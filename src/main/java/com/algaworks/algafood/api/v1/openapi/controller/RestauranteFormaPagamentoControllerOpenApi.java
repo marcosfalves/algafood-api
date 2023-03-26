@@ -15,7 +15,7 @@ import org.springframework.http.ResponseEntity;
 @SecurityRequirement(name = "security_auth")
 public interface RestauranteFormaPagamentoControllerOpenApi {
 
-    @Operation(summary = "Listar as formas de pagamento aceitas pelo restaurante",
+    @Operation(summary = "Lista as formas de pagamento aceitas pelo restaurante",
             responses = {
                     @ApiResponse(responseCode = "200"),
                     @ApiResponse(responseCode = "400", description = "ID do restaurante é inválido",
