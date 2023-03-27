@@ -21,8 +21,6 @@
 		<logback-ext-loggly.version>0.1.5</logback-ext-loggly.version>
 		<mysql-connector-java.version>8.0.32</mysql-connector-java.version>
 		<springdoc.version>1.6.15</springdoc.version>
-		<spring-security-oauth2.version>2.5.2.RELEASE</spring-security-oauth2.version>
-		<spring-security-jwt.version>1.0.11.RELEASE</spring-security-jwt.version>
 		<dockerfile-maven-version>1.4.13</dockerfile-maven-version>
 	</properties>
 	<dependencies>
@@ -85,20 +83,8 @@
 		</dependency>
 
 		<!-- Authorization Server -->
-		<dependency>
-			<groupId>org.springframework.security.oauth</groupId>
-			<artifactId>spring-security-oauth2</artifactId>
-			<version>${spring-security-oauth2.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-jwt</artifactId>
-			<version>${spring-security-jwt.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-thymeleaf</artifactId>
-		</dependency>
+
+
 		<!-- Store session HTTP Authorization Server -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
