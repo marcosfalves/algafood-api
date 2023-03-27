@@ -9,11 +9,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 
 import java.io.IOException;
 
+@Tag(name = "Produtos")
 @SecurityRequirement(name = "security_auth")
 public interface RestauranteProdutoFotoControllerOpenApi {
 
@@ -25,7 +27,7 @@ public interface RestauranteProdutoFotoControllerOpenApi {
             }),
             @ApiResponse(responseCode = "400", description = "ID do restaurante ou do produto inválido",
                     content = @Content(schema = @Schema(ref = "Problema"))),
-            @ApiResponse(responseCode = "404", description = "Foto de produto não encontrada",
+            @ApiResponse(responseCode = "404", description = "Foto do produto não encontrada",
                     content = @Content(schema = @Schema(ref = "Problema")))
     })
     FotoProdutoModel buscar(@Parameter(description = "ID do restaurante", example = "1", required = true) Long restauranteId,
@@ -40,5 +42,7 @@ public interface RestauranteProdutoFotoControllerOpenApi {
                                @Parameter(description = "ID do produto", example = "2", required = true) Long produtoId,
                                @RequestBody(required = true) FotoProdutoInput fotoProdutoInput) throws IOException;
 
-    void excluir(Long restauranteId, Long produtoId);
+    @Operation(summary = "Exclui a foto do produto de um restaurante")
+    void excluir(@Parameter(description = "ID do restaurante", example = "1", required = true) Long restauranteId,
+                 @Parameter(description = "ID do produto", example = "2", required = true) Long produtoId);
 }
