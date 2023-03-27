@@ -22,6 +22,7 @@
 		<mysql-connector-java.version>8.0.32</mysql-connector-java.version>
 		<springdoc.version>1.6.15</springdoc.version>
 		<dockerfile-maven-version>1.4.13</dockerfile-maven-version>
+		<springauthserver.version>0.3.1</springauthserver.version>
 	</properties>
 	<dependencies>
 		<!-- Spring	-->
@@ -83,7 +84,11 @@
 		</dependency>
 
 		<!-- Authorization Server -->
-
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-oauth2-authorization-server</artifactId>
+			<version>${springauthserver.version}</version>
+		</dependency>
 
 		<!-- Store session HTTP Authorization Server -->
 		<dependency>

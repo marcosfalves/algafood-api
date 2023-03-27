@@ -34,6 +34,9 @@ algafood:
       regiao: ${AWS_S3_REGION}
       diretorio-fotos: product-photos
 
+  auth:
+    provider-url: "https://algafood-api.malves.dev.br"
+
   jwt:
     keystore:
       jks-location: ${JKS_BASE64}
