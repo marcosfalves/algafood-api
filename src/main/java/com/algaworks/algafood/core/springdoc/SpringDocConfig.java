@@ -109,7 +109,8 @@ public class SpringDocConfig {
           new Tag().name("Formas de Pagamento").description("Gerencia as formas de pagamento"),
           new Tag().name("Pedidos").description("Gerencia os pedidos"),
           new Tag().name("Restaurantes").description("Gerencia os restaurantes"),
-          new Tag().name("Estados").description("Gerencia os estados")
+          new Tag().name("Estados").description("Gerencia os estados"),
+          new Tag().name("Produtos").description("Gerencia os produtos dos restaurantes")
         );
     }
 
@@ -156,7 +157,7 @@ public class SpringDocConfig {
     }
 
     private void globalGetResponseMessages(ApiResponses responses) {
-        //Utilizado direto nos controllers para forçar carregar o Schema
+        //Utilizado direto nos controllers para forçar carregar o Schema de Problem.class
         //responses.addApiResponse("400", new ApiResponse().$ref(badRequestInvalidParamResponse));
 
         buildResponseMessagesHttpStatusAccepted(
