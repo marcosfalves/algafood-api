@@ -3,38 +3,39 @@ package com.algaworks.algafood.api.v1.openapi.controller;
 import com.algaworks.algafood.api.v1.controller.EstatisticasController.EstatisticasModel;
 import com.algaworks.algafood.domain.filter.VendaDiariaFilter;
 import com.algaworks.algafood.domain.model.dto.VendaDiaria;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 
-import java.sql.Date;
 import java.time.ZoneOffset;
 import java.util.List;
 
-@Api(tags = "Estatísticas")
+@Tag(name = "Estatísticas")
+@SecurityRequirement(name = "security_auth")
 public interface EstatisticasControllerOpenApi {
 
-    @ApiOperation("Consulta estatísticas de vendas diárias")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "restauranteId", paramType = "query", value = "ID do restaurante",
-                    example = "1", dataTypeClass = Long.class),
-            @ApiImplicitParam(name = "dataCriacaoInicio", paramType = "query", value = "Data inicial da criação do pedido",
-                    example = "2023-02-11", dataTypeClass = Date.class),
-            @ApiImplicitParam(name = "dataCriacaoFim", paramType = "query", value = "Data final da criação do pedido",
-                    example = "2023-02-11", dataTypeClass = Date.class)
+    @Operation(summary = "Consulta estatísticas de vendas diárias", responses = {
+            @ApiResponse(responseCode = "200", content = {
+                    @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = VendaDiaria.class))),
+                    @Content(mediaType = "application/pdf", schema = @Schema(type = "string", format = "binary"))
+            }),
+            @ApiResponse(responseCode = "400", description = "Requisição inválida",
+                    content = @Content(schema = @Schema(ref = "Problema")))
     })
-    List<VendaDiaria> consultarVendasDiarias(VendaDiariaFilter filtro,
+    List<VendaDiaria> consultarVendasDiarias(@ParameterObject VendaDiariaFilter filtro,
+                                             @Parameter(description = "Deslocamento de horário a ser considerado na consulta em relação ao UTC",
+                                                     schema = @Schema(type = "string", defaultValue = "+00:00")) ZoneOffset zoneOffset);
 
-                                             @ApiParam(value = "Deslocamento de horário a ser considerado na consulta em relação ao UTC",
-                                                     defaultValue = "+00:00")
-                                             ZoneOffset zoneOffset);
+    @Operation(hidden = true)
+    ResponseEntity<byte[]> consultarVendasDiariasPdf(VendaDiariaFilter filtro, ZoneOffset zoneOffset);
 
-    ResponseEntity<byte[]> consultarVendasDiariasPdf(VendaDiariaFilter filtro,
-                                                     ZoneOffset zoneOffset);
-
-    @ApiOperation(value = "Estatísticas", hidden = true)
+    @Operation(summary = "Estatísticas", hidden = true)
     EstatisticasModel estatisticas();
 }

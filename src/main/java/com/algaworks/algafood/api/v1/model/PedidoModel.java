@@ -2,7 +2,7 @@ package com.algaworks.algafood.api.v1.model;
 
 import com.algaworks.algafood.domain.model.StatusPedido;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.hateoas.RepresentationModel;
@@ -16,28 +16,37 @@ import java.util.List;
 @Getter
 @Setter
 public class PedidoModel extends RepresentationModel<PedidoModel> {
-    @ApiModelProperty(example = "b5741512-8fbc-47fa-9ac1-b530354fc0ff")
+    @Schema(example = "b5741512-8fbc-47fa-9ac1-b530354fc0ff")
     private String codigo;
-    @ApiModelProperty(example = "100.00")
+
+    @Schema(example = "100.00")
     private BigDecimal subtotal;
-    @ApiModelProperty(example = "8.00")
+
+    @Schema(example = "8.00")
     private BigDecimal taxaFrete;
-    @ApiModelProperty(example = "108.00")
+
+    @Schema(example = "108.00")
     private BigDecimal valorTotal;
-    @ApiModelProperty(example = "ENTREGUE")
+
+    @Schema(example = "ENTREGUE")
     private StatusPedido status;
-    @ApiModelProperty(example = "2023-02-07T09:50:07Z")
+
+    @Schema(example = "2023-03-25T09:50:07Z")
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     private OffsetDateTime dataCriacao;
-    @ApiModelProperty(example = "2023-02-07T09:55:07Z")
+
+    @Schema(example = "2023-03-25T09:55:07Z")
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     private OffsetDateTime dataConfirmacao;
-    @ApiModelProperty(example = "2023-02-07T10:30:07Z")
+
+    @Schema(example = "2023-03-25T10:30:07Z")
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     private OffsetDateTime dataEntrega;
-    @ApiModelProperty(example = "2023-02-07T09:50:07Z")
+
+    @Schema(example = "2023-02-07T09:50:07Z")
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     private OffsetDateTime dataCancelamento;
+
     private RestauranteApenasNomeModel restaurante;
     private UsuarioModel cliente;
     private FormaPagamentoModel formaPagamento;

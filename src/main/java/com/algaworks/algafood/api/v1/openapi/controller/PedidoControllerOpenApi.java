@@ -1,38 +1,34 @@
 package com.algaworks.algafood.api.v1.openapi.controller;
 
-import com.algaworks.algafood.api.exceptionhandler.Problem;
 import com.algaworks.algafood.api.v1.model.PedidoModel;
 import com.algaworks.algafood.api.v1.model.PedidoResumoModel;
 import com.algaworks.algafood.api.v1.model.input.PedidoInput;
+import com.algaworks.algafood.core.springdoc.PageableParameter;
 import com.algaworks.algafood.domain.filter.PedidoFilter;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.PagedModel;
-import org.springframework.http.MediaType;
 
-@Api(tags = "Pedidos")
+@Tag(name = "Pedidos")
+@SecurityRequirement(name = "security_auth")
 public interface PedidoControllerOpenApi {
-    @ApiOperation("Lista os pedidos com paginação")
-    PagedModel<PedidoResumoModel> pesquisar(Pageable pageable,
-                                            PedidoFilter filtro);
 
-    @ApiOperation("Busca um pedido por código")
-    @ApiResponses({
-            @ApiResponse(responseCode = "404", description = "Pedido não encontrado",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
+    @Operation(summary = "Pesquisa os pedidos com paginação")
+    @PageableParameter
+    PagedModel<PedidoResumoModel> pesquisar(@Parameter(hidden = true) Pageable pageable,
+                                            @ParameterObject PedidoFilter filtro);
 
+    @Operation(summary = "Busca um pedido por código")
+    PedidoModel buscar(@Parameter(description = "Código de um pedido", example = "b5741512-8fbc-47fa-9ac1-b530354fc0ff", required = true) String codigoPedido);
+
+    @Operation(summary = "Registra um novo pedido", responses = {
+            @ApiResponse(responseCode = "201", description = "Pedido registrado"),
     })
-    PedidoModel buscar(@ApiParam(value = "Código de um pedido", example = "b5741512-8fbc-47fa-9ac1-b530354fc0ff") String codigoPedido);
-
-    @ApiOperation("Registra um pedido")
-    @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Pedido registrado")
-    })
-    PedidoModel adicionar(PedidoInput pedidoInput);
+    PedidoModel adicionar(@RequestBody(description = "Representação de um novo pedido", required = true) PedidoInput pedidoInput);
 }

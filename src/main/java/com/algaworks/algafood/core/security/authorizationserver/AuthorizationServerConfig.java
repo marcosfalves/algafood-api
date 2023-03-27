@@ -59,7 +59,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
         //security.checkTokenAccess("isAuthenticated()"); //Basic Authentication
         security.checkTokenAccess("permitAll()")//No Auth
-                .tokenKeyAccess("permitAll()"); //Permite consultar a public key
+                .tokenKeyAccess("permitAll()") //Permite consultar a public key
+                .allowFormAuthenticationForClients(); //Permite informar o client-id e client-secret no body sem precisar de autenticação Basic ao utilizar o fluxo authorization_code
     }
 
     @Override
