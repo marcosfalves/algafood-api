@@ -17,6 +17,14 @@ spring:
     host: localhost
     port: 6379
 
+  security:
+    oauth2:
+      resourceserver:
+        opaque-token:
+          introspection-uri: "http://localhost:${SERVER_PORT:8081}/oauth2/introspect"
+          client-id: algafood-backend
+          client-secret: backend123
+
 algafood:
   email:
     impl: fake
