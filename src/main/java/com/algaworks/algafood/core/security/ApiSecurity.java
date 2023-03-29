@@ -29,7 +29,7 @@ public class ApiSecurity {
     public Long getUsuarioId() {
         var jwt = (Jwt) getAuthentication().getPrincipal();
 
-        return jwt.getClaim("usuario_id");
+        return jwt.getClaim("user_id");
     }
 
     public boolean usuarioAutenticadoIgual(Long usuarioId) {

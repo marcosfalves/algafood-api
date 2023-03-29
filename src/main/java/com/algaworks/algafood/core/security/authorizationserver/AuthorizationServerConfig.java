@@ -148,7 +148,7 @@ public class AuthorizationServerConfig {
                         .map(grantedAuthority -> grantedAuthority.getAuthority())
                         .collect(Collectors.toSet());
 
-                context.getClaims().claim("user_id", usuario.getId().toString());
+                context.getClaims().claim("user_id", usuario.getId());
                 context.getClaims().claim("authorities", authorities);
             }
         };
