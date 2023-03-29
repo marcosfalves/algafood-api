@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.jdbc.core.JdbcOperations;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.core.Authentication;
@@ -34,7 +33,8 @@ public class AuthorizationServerConfig {
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain authFilterChain(HttpSecurity httpSecurity) throws Exception {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(httpSecurity);
-        return httpSecurity.formLogin(Customizer.withDefaults())
+        return httpSecurity
+                .formLogin(customizer -> customizer.loginPage("/login"))
                 .build();
     }
 
