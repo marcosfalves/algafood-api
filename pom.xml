@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.7.9</version>
+		<version>3.0.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.algaworks</groupId>
@@ -19,9 +19,9 @@
 		<jasperreports.version>6.20.0</jasperreports.version>
 		<aws-java-sdk-s3.version>1.12.385</aws-java-sdk-s3.version>
 		<logback-ext-loggly.version>0.1.5</logback-ext-loggly.version>
+		<dockerfile-maven-version>1.4.13</dockerfile-maven-version>
 		<mysql-connector-java.version>8.0.32</mysql-connector-java.version>
 		<springdoc.version>1.6.15</springdoc.version>
-		<dockerfile-maven-version>1.4.13</dockerfile-maven-version>
 		<springauthserver.version>0.3.1</springauthserver.version>
 	</properties>
 	<dependencies>
