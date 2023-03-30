@@ -3,13 +3,12 @@ package com.algaworks.algafood.api.v1.model.input;
 import com.algaworks.algafood.core.validation.FileContentType;
 import com.algaworks.algafood.core.validation.FileSize;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
