@@ -62,7 +62,8 @@ springdoc:
       client-id: algafood-web
       client-secret: web123
       use-pkce-with-authorization-code-grant: true
+      use-basic-authentication-with-access-code-grant: true
   algafood:
     oauth-flow:
-      authorization-url: "http://localhost:${SERVER_PORT:8081}/oauth/authorize"
-      token-url: "http://localhost:${SERVER_PORT:8081}/oauth/token"
+      authorization-url: "http://127.0.0.1:${SERVER_PORT:8081}/oauth2/authorize"
+      token-url: "http://127.0.0.1:${SERVER_PORT:8081}/oauth2/token"
