@@ -15,6 +15,14 @@ spring:
     username: ${SMTP_EMAIL_USER}
     password: ${SMTP_EMAIL_PASSWORD}
 
+#  security:
+#    oauth2:
+#      resourceserver:
+#        opaque-token:
+#          introspection-uri: "https://algafood-api.malves.dev.br/oauth2/introspect"
+#          client-id: algafood-backend
+#          client-secret: backend123
+
 algafood:
   logging:
     loggly:
@@ -33,6 +41,9 @@ algafood:
       bucket: ${AWS_S3_BUCKET_NAME}
       regiao: ${AWS_S3_REGION}
       diretorio-fotos: product-photos
+
+  auth:
+    provider-url: "https://algafood-api.malves.dev.br"
 
   jwt:
     keystore:
