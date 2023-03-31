@@ -31,7 +31,7 @@ spring:
     open-in-view: true
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
+        dialect: org.hibernate.dialect.MySQLDialect
 
   data:
     redis:
@@ -67,3 +67,11 @@ springdoc:
     oauth-flow:
       authorization-url: "http://127.0.0.1:${SERVER_PORT:8081}/oauth2/authorize"
       token-url: "http://127.0.0.1:${SERVER_PORT:8081}/oauth2/token"
+
+logging:
+  level:
+    org:
+      springframework:
+        security:
+          web:
+            DefaultSecurityFilterChain: warn

@@ -12,8 +12,8 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationConsentService;
@@ -22,11 +22,12 @@ import org.springframework.security.oauth2.server.authorization.OAuth2Authorizat
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.client.JdbcRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
-import org.springframework.security.oauth2.server.authorization.config.ProviderSettings;
+import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
+import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
 import java.security.KeyStore;
 import java.util.stream.Collectors;
@@ -37,31 +38,30 @@ public class AuthorizationServerConfig {
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain authFilterChain(HttpSecurity httpSecurity) throws Exception {
-        //OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(httpSecurity);
-        OAuth2AuthorizationServerConfigurer<HttpSecurity> authorizationServerConfigurer =
-                new OAuth2AuthorizationServerConfigurer<>();
-        RequestMatcher endpointsMatcher = authorizationServerConfigurer
-                .getEndpointsMatcher();
+        var authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer();
+        var endpointsMatcher = authorizationServerConfigurer.getEndpointsMatcher();
 
         authorizationServerConfigurer.authorizationEndpoint(
                 customizer -> customizer.consentPage("/oauth2/consent"));
 
         httpSecurity
-                .requestMatcher(endpointsMatcher)
-                .authorizeRequests(authorizeRequests ->
-                        authorizeRequests.anyRequest().authenticated()
-                )
+                .securityMatcher(endpointsMatcher)
+                .authorizeHttpRequests(authorize -> {
+                    authorize.anyRequest().authenticated();
+                })
                 .csrf(csrf -> csrf.ignoringRequestMatchers(endpointsMatcher))
+                .formLogin(customizer -> customizer.loginPage("/login"))
+                .exceptionHandling(exceptions -> {
+                    exceptions.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"));
+                })
                 .apply(authorizationServerConfigurer);
 
-        return httpSecurity
-                .formLogin(customizer -> customizer.loginPage("/login"))
-                .build();
+        return httpSecurity.build();
     }
 
     @Bean
-    public ProviderSettings providerSettings(AlgaFoodSecurityProperties properties) {
-        return ProviderSettings.builder()
+    public AuthorizationServerSettings providerSettings(AlgaFoodSecurityProperties properties) {
+        return AuthorizationServerSettings.builder()
                 .issuer(properties.getProviderUrl())
                 .build();
     }
@@ -94,14 +94,13 @@ public class AuthorizationServerConfig {
     public OAuth2TokenCustomizer<JwtEncodingContext> jwtCustomizer(UsuarioRepository usuarioRepository) {
         return context -> {
             Authentication authentication = context.getPrincipal();
-            if (authentication.getPrincipal() instanceof User) {
-                var user = (User) authentication.getPrincipal();
+            if (authentication.getPrincipal() instanceof User user) {
 
                 var usuario = usuarioRepository.findByEmailIgnoreCase(user.getUsername())
                         .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com o e-mail informado!"));
 
                 var authorities = user.getAuthorities().stream()
-                        .map(grantedAuthority -> grantedAuthority.getAuthority())
+                        .map(GrantedAuthority::getAuthority)
                         .collect(Collectors.toSet());
 
                 context.getClaims().claim("user_id", usuario.getId().toString());

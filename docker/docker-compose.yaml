@@ -36,8 +36,7 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=development
       - DB_HOST=algafood-mysql
-      - SPRING_SESSION_STORE_TYPE=redis
-      - SPRING_REDIS_HOST=algafood-redis
+      - SPRING_DATA_REDIS_HOST=algafood-redis
     networks:
       - algafood-network
     depends_on:
