@@ -10,7 +10,7 @@ import java.time.OffsetDateTime;
 @Getter
 @Setter
 public class PedidoFilter {
-    @Schema(example = "1", description = "ID do cliente para filtro da pesquisa")
+    @Schema(example = "6", description = "ID do cliente para filtro da pesquisa")
     private Long clienteId;
 
     @Schema(example = "1", description = "ID do restaurante para filtro da pesquisa")

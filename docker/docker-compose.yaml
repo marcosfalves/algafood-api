@@ -31,11 +31,12 @@ services:
       - algafood-network
 
   algafood-api:
-    image: marcosfalves/algafood-api
+    image: algafood-api
     command: ["/wait-for-it.sh", "algafood-mysql:3306", "-t", "30", "--", "java", "-jar", "algafood.jar"]
     environment:
       - SPRING_PROFILES_ACTIVE=development
       - DB_HOST=algafood-mysql
+      - AUTH_SERVER_HOST=http://127.0.0.1
       - SPRING_DATA_REDIS_HOST=algafood-redis
     networks:
       - algafood-network

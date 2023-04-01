@@ -102,7 +102,7 @@
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
 
-		<!-- Store session HTTP Authorization Server -->
+		<!-- Store session HTTP for Authorization Server -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-redis</artifactId>
@@ -112,7 +112,7 @@
 			<artifactId>spring-session-data-redis</artifactId>
 		</dependency>
 
-		<!-- Documentação -->
+		<!-- Documentação OpenAPI 3 -->
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-common</artifactId>

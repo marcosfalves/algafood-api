@@ -62,8 +62,8 @@ springdoc:
       use-basic-authentication-with-access-code-grant: true
   algafood:
     oauth-flow:
-      authorization-url: "http://127.0.0.1:${SERVER_PORT:8081}/oauth2/authorize"
-      token-url: "http://127.0.0.1:${SERVER_PORT:8081}/oauth2/token"
+      authorization-url: "${AUTH_SERVER_HOST:http://127.0.0.1:8081}/oauth2/authorize"
+      token-url: "${AUTH_SERVER_HOST:http://127.0.0.1:8081}/oauth2/token"
 
 logging:
   level:
