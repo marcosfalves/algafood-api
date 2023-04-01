@@ -4,24 +4,17 @@ spring:
     username: ${DB_USER}
     password: ${DB_PASSWORD}
 
-  redis:
-    host: ${REDIS_HOST}
-    port: ${REDIS_PORT}
-    password: ${REDIS_PASSWORD}
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
 
   mail:
     host: ${SMTP_EMAIL_HOST}
     port: ${SMTP_EMAIL_PORT}
     username: ${SMTP_EMAIL_USER}
     password: ${SMTP_EMAIL_PASSWORD}
-
-#  security:
-#    oauth2:
-#      resourceserver:
-#        opaque-token:
-#          introspection-uri: "https://algafood-api.malves.dev.br/oauth2/introspect"
-#          client-id: algafood-backend
-#          client-secret: backend123
 
 algafood:
   logging:
