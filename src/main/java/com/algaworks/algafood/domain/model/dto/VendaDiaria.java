@@ -1,5 +1,6 @@
 package com.algaworks.algafood.domain.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,6 +10,7 @@ import java.util.Date;
 @Getter
 @Setter
 public class VendaDiaria {
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date data;
     private Long totalVendas;
     private BigDecimal totalFaturado;
