@@ -48,8 +48,11 @@ Neste curso partimos do básico como os CRUDS, e vamos muito além, com tópicos
    ```sh
    docker-compose up -d
    ```
-4. Execute a aplicação em sua IDE
-    - Iniciar o método main da classe [AlgafoodApiApplication](./src/main/java/com/algaworks/algafood/AlgafoodApiApplication.java)
+4. Execute a aplicação
+    ```sh
+    ./mvnw spring-boot:run
+   ```
+   ou inicie o método main da classe [AlgafoodApiApplication](./src/main/java/com/algaworks/algafood/AlgafoodApiApplication.java)
 ---
 ## Deploy em ambiente local
 - O deploy em ambiente local permite validar o build e a construção da imagem docker do projeto e também validar o funcionamento com mais de uma instância da aplicação em execução.
