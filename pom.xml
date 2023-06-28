@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.0.5</version>
+		<version>3.1.1</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.algaworks</groupId>
@@ -19,7 +19,6 @@
 		<jasperreports.version>6.20.0</jasperreports.version>
 		<aws-java-sdk-s3.version>1.12.385</aws-java-sdk-s3.version>
 		<logback-ext-loggly.version>0.1.5</logback-ext-loggly.version>
-		<dockerfile-maven-version>1.4.13</dockerfile-maven-version>
 		<springdoc.version>2.0.4</springdoc.version>
 		<springauthserver.version>1.0.1</springauthserver.version>
 	</properties>
@@ -28,7 +27,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-properties-migrator</artifactId>
-			<scope>runtime</scope>
+			<scope>compile</scope>
 		</dependency>
 
 		<!-- Spring	-->
@@ -205,36 +204,5 @@
 			</plugin>
 		</plugins>
 	</build>
-
-	<profiles>
-		<profile>
-			<id>docker</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>com.spotify</groupId>
-						<artifactId>dockerfile-maven-plugin</artifactId>
-						<version>${dockerfile-maven-version}</version>
-						<executions>
-							<execution>
-								<id>default</id>
-								<goals>
-									<goal>build</goal>
-									<goal>push</goal>
-								</goals>
-							</execution>
-						</executions>
-						<configuration>
-							<repository>algafood-api</repository>
-<!--							<tag>${project.version}</tag>-->
-							<buildArgs>
-								<JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
-							</buildArgs>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 
 </project>

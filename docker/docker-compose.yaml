@@ -31,8 +31,9 @@ services:
       - algafood-network
 
   algafood-api:
+    build: ../
     image: algafood-api
-    command: ["/wait-for-it.sh", "algafood-mysql:3306", "-t", "30", "--", "java", "-jar", "algafood.jar"]
+    command: ["/wait-for-it.sh", "algafood-mysql:3306", "-t", "30", "--", "java", "-Xms896m", "-Xmx1024m", "-jar", "algafood-api.jar"]
     environment:
       - SPRING_PROFILES_ACTIVE=development
       - DB_HOST=algafood-mysql

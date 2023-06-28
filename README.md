@@ -43,38 +43,33 @@ Neste curso partimos do básico como os CRUDS, e vamos muito além, com tópicos
    ```sh
    git clone https://github.com/marcosfalves/algafood-api.git
    ```
-2. Abra em sua IDE preferida
-3. Inicie o ambiente de desenvolvimento com o docker
+2. Inicie o ambiente de desenvolvimento com o docker
    ```sh
    docker-compose up -d
    ```
-4. Execute a aplicação
+3. Execute a aplicação
     ```sh
     ./mvnw spring-boot:run
    ```
-   ou inicie o método main da classe [AlgafoodApiApplication](./src/main/java/com/algaworks/algafood/AlgafoodApiApplication.java)
+   ou na IDE inicie o método main da classe [AlgafoodApiApplication](./src/main/java/com/algaworks/algafood/AlgafoodApiApplication.java)
 ---
 ## Deploy em ambiente local
 - O deploy em ambiente local permite validar o build e a construção da imagem docker do projeto e também validar o funcionamento com mais de uma instância da aplicação em execução.
 
 ### Instruções
-1. Compilar e gerar imagem docker da aplicação:
-   ```sh
-   ./mvnw clean package -Pdocker
-   ```
-2. Inicie o ambiente de desenvolvimento com o docker:
+1. Inicie o ambiente de desenvolvimento com o docker:
    ```sh
    cd docker
    docker-compose up -d --build --force-recreate --scale algafood-api=2
    ```
-3. As requisições devem ser realizadas diretamente para http://localhost/
+2. As requisições devem ser realizadas diretamente para http://localhost/
    * Não informar a porta pois está utilizando NGINX para proxy reverso, assim também é possível utilizar o balanceador de carga do Docker. 
-4. Verificar os logs dos containers:
+3. Verificar os logs dos containers:
    ```sh
    cd docker
    docker-compose logs -f
    ```
-5. Acessar OpenAPI
+4. Acessar OpenAPI
     * http://127.0.0.1/swagger-ui/index.html
       * Para acessar a doc deve ser utilizado o IP do localhost devido regras de segurança para redirecionamento da autenticação.
     * Ao realizar a autorização no Swagger, utilizar as credenciais já preenchidas e marcar os escopos.
