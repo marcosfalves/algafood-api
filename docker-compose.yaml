@@ -21,5 +21,28 @@ services:
       ports:
         - "6379:6379"
 
+    localstack:
+      image: localstack/localstack:2.1-amd64
+      network_mode: bridge
+      environment:
+        - SERVICES=s3
+        - DEBUG=1
+        - DISABLE_CORS_HEADERS=1
+        - DISABLE_CORS_CHECKS=1
+        - AWS_DEFAULT_REGION=us-east-1
+        - AWS_ACCESS_KEY_ID=localstack
+        - AWS_SECRET_ACCESS_KEY=localstack
+        - AWS_DEFAULT_OUTPUT=json
+        - DOCKER_HOST=unix:///var/run/docker.sock
+        - DATA_DIR=/tmp/localstack/data
+      #        - USE_SSL=1
+      ports:
+        - "127.0.0.1:4566:4566" # s3
+      volumes:
+        - aws-s3:/root/localstack/s3
+        - /var/run/docker.sock:/var/run/docker.sock
+        - ./docker/init-aws-localstack.sh:/etc/localstack/init/ready.d/init-aws.sh
+
 volumes:
   db-data:
+  aws-s3:
