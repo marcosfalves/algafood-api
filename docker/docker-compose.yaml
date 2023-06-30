@@ -6,6 +6,7 @@ networks:
 
 volumes:
   db-data:
+  aws-s3:
 
 services:
   algafood-mysql:
@@ -53,3 +54,27 @@ services:
       - algafood-network
     depends_on:
       - algafood-api
+
+  algafood-localstack:
+    image: localstack/localstack:2.1-amd64
+    environment:
+      - SERVICES=s3
+      - DEBUG=1
+      - DISABLE_CORS_HEADERS=1
+      - DISABLE_CORS_CHECKS=1
+      - AWS_DEFAULT_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=localstack
+      - AWS_SECRET_ACCESS_KEY=localstack
+      - AWS_DEFAULT_OUTPUT=json
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - DATA_DIR=/tmp/localstack/data
+    #        - USE_SSL=1
+    networks:
+      algafood-network:
+        ipv4_address: 172.17.0.2
+    ports:
+      - "4566:4566" # s3
+    volumes:
+      - aws-s3:/root/localstack/s3
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./init-aws-localstack.sh:/etc/localstack/init/ready.d/init-aws.sh

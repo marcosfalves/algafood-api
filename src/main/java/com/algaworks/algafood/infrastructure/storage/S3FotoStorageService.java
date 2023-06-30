@@ -2,19 +2,20 @@ package com.algaworks.algafood.infrastructure.storage;
 
 import com.algaworks.algafood.core.storage.StorageProperties;
 import com.algaworks.algafood.domain.service.FotoStorageService;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetUrlRequest;
+import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.net.URL;
 
 public class S3FotoStorageService implements FotoStorageService {
 
     @Autowired
-    private AmazonS3 amazonS3;
+    private S3Client s3Client;
 
     @Autowired
     private StorageProperties storageProperties;
@@ -24,7 +25,12 @@ public class S3FotoStorageService implements FotoStorageService {
         try {
             String caminhoArquivo = getCaminhoArquivo(nomeArquivo);
 
-            URL url = amazonS3.getUrl(storageProperties.getS3().getBucket(), caminhoArquivo);
+            GetUrlRequest request = GetUrlRequest.builder()
+                    .bucket(storageProperties.getS3().getBucket())
+                    .key(caminhoArquivo)
+                    .build();
+
+            URL url = s3Client.utilities().getUrl(request);
 
             return FotoRecuperada.builder()
                     .url(url.toString())
@@ -38,18 +44,20 @@ public class S3FotoStorageService implements FotoStorageService {
     public void armazenar(NovaFoto novaFoto) {
         try {
             String caminhoArquivo = getCaminhoArquivo(novaFoto.getNomeArquivo());
-            var objectMetadata = new ObjectMetadata();
-            objectMetadata.setContentType(novaFoto.getContentType());
-            objectMetadata.setContentLength(novaFoto.getTamanho());
 
-            var putObjectRequest = new PutObjectRequest(
-                    storageProperties.getS3().getBucket(),
-                    caminhoArquivo,
+            var putObjectRequest = PutObjectRequest.builder()
+                    .bucket(storageProperties.getS3().getBucket())
+                    .key(caminhoArquivo)
+                    .contentType(novaFoto.getContentType())
+                    .acl(ObjectCannedACL.PUBLIC_READ)
+                    .build();
+
+            var requestBody = RequestBody.fromInputStream(
                     novaFoto.getInputStream(),
-                    objectMetadata
-            ).withCannedAcl(CannedAccessControlList.PublicRead);
+                    novaFoto.getTamanho()
+            );
 
-            amazonS3.putObject(putObjectRequest);
+            s3Client.putObject(putObjectRequest, requestBody);
         } catch (Exception e) {
             throw new StorageException("Não foi possível enviar arquivo para Amazon S3.", e);
         }
@@ -64,11 +72,12 @@ public class S3FotoStorageService implements FotoStorageService {
         try {
             String caminhoArquivo = getCaminhoArquivo(nomeArquivo);
 
-            var deleteObjectRequest = new DeleteObjectRequest(
-                    storageProperties.getS3().getBucket(),
-                    caminhoArquivo);
+            var deleteObjectRequest = DeleteObjectRequest.builder()
+                    .bucket(storageProperties.getS3().getBucket())
+                    .key(caminhoArquivo)
+                    .build();
 
-            amazonS3.deleteObject(deleteObjectRequest);
+            s3Client.deleteObject(deleteObjectRequest);
         } catch (Exception e) {
             throw new StorageException("Não foi possível excluir arquivo na Amazon S3.", e);
         }

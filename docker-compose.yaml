@@ -23,7 +23,6 @@ services:
 
     localstack:
       image: localstack/localstack:2.1-amd64
-      network_mode: bridge
       environment:
         - SERVICES=s3
         - DEBUG=1
@@ -36,6 +35,7 @@ services:
         - DOCKER_HOST=unix:///var/run/docker.sock
         - DATA_DIR=/tmp/localstack/data
       #        - USE_SSL=1
+      network_mode: bridge
       ports:
         - "127.0.0.1:4566:4566" # s3
       volumes:

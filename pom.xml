@@ -17,7 +17,7 @@
 		<java.version>17</java.version>
 		<modelmapper.version>3.1.1</modelmapper.version>
 		<jasperreports.version>6.20.0</jasperreports.version>
-		<aws-java-sdk-s3.version>1.12.385</aws-java-sdk-s3.version>
+		<aws-java-sdk-s3.version>2.20.96</aws-java-sdk-s3.version>
 		<logback-ext-loggly.version>0.1.5</logback-ext-loggly.version>
 		<springdoc.version>2.0.4</springdoc.version>
 		<springauthserver.version>1.0.1</springauthserver.version>
@@ -186,9 +186,15 @@
 
 		<!-- AWS -->
 		<dependency>
-			<groupId>com.amazonaws</groupId>
-			<artifactId>aws-java-sdk-s3</artifactId>
+			<groupId>software.amazon.awssdk</groupId>
+			<artifactId>s3</artifactId>
 			<version>${aws-java-sdk-s3.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>software.amazon.awssdk</groupId>
+					<artifactId>netty-nio-client</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 	</dependencies>

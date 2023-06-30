@@ -26,7 +26,7 @@ algafood:
       destinatario: marquinhofalves@gmail.com
 
   storage:
-    tipo: s3
+    tipo: localstack
     s3:
       id-chave-acesso: localstack
       chave-acesso-secreta: localstack
