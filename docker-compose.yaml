@@ -1,25 +1,65 @@
 version: "3.9"
 
-services:
-    db-mysql:
-      image: mysql:8.0.32
-      command: --default-authentication-plugin=mysql_native_password
-      restart: always
-      environment:
-        - MYSQL_ROOT_PASSWORD=1234
-#        - MYSQL_DATABASE=testdb
-#        - MYSQL_USER=admin
-#        - MYSQL_PASSWORD=root
-      ports:
-        - "3306:3306"
-      volumes:
-        - db-data:/var/lib/mysql
-
-    redis:
-      image: redis:6.2.11-alpine
-      restart: always
-      ports:
-        - "6379:6379"
+networks:
+  algafood-dev-network:
+    name: algafood-dev-network
+    ipam:
+      config:
+        - subnet: 10.0.2.0/24
 
 volumes:
   db-data:
+  aws-s3:
+
+services:
+
+  db-mysql:
+    image: mysql:8.0.33
+    container_name: algafood-mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=1234
+    #        - MYSQL_DATABASE=testdb
+    #        - MYSQL_USER=admin
+    #        - MYSQL_PASSWORD=root
+    ports:
+      - "3306:3306"
+    networks:
+      - algafood-dev-network
+    volumes:
+      - db-data:/var/lib/mysql
+
+  redis:
+    image: redis:6.2.11-alpine
+    container_name: algafood-redis
+    restart: always
+    networks:
+      - algafood-dev-network
+    ports:
+      - "6379:6379"
+
+  localstack:
+    image: localstack/localstack:2.1-amd64
+    container_name: algafood-localstack
+    environment:
+      - SERVICES=s3
+      - DEBUG=1
+      - DISABLE_CORS_HEADERS=1
+      - DISABLE_CORS_CHECKS=1
+      - AWS_DEFAULT_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=localstack
+      - AWS_SECRET_ACCESS_KEY=localstack
+      - AWS_DEFAULT_OUTPUT=json
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - DATA_DIR=/tmp/localstack/data
+    #        - USE_SSL=1
+    networks:
+      algafood-dev-network:
+        ipv4_address: 10.0.2.20
+    ports:
+      - "127.0.0.1:4566:4566"
+    volumes:
+      - aws-s3:/root/localstack/s3
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./docker/init-aws-localstack.sh:/etc/localstack/init/ready.d/init-aws.sh

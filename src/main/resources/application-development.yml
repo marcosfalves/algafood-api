@@ -26,9 +26,13 @@ algafood:
       destinatario: marquinhofalves@gmail.com
 
   storage:
-    tipo: local
-    local:
-      diretorio-fotos: "/home/malves/catalogo"
+    tipo: localstack
+    s3:
+      id-chave-acesso: localstack
+      chave-acesso-secreta: localstack
+      bucket: algafood-dev
+      regiao: us-east-1
+      diretorio-fotos: product-photos
 
   auth:
     provider-url: "http://localhost:${SERVER_PORT:8081}"

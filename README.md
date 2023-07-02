@@ -27,6 +27,7 @@ Neste curso partimos do básico como os CRUDS, e vamos muito além, com tópicos
 * [Flyway](https://flywaydb.org/)
 * [Jasper Reports](https://community.jaspersoft.com/)
 * [AWS JDK S3](https://docs.aws.amazon.com/sdk-for-java/index.html)
+* [LocalStack](https://localstack.cloud/)
 ---
 ## Ambiente de desenvolvimento
 ### Pré-requisitos
