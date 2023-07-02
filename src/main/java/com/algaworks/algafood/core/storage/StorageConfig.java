@@ -16,7 +16,7 @@ import java.net.URI;
 @Configuration
 public class StorageConfig {
 
-    private static final String URL_S3_LOCALSTACK = "http://s3.localhost.localstack.cloud:4566";
+    private static final String URL_S3_LOCALSTACK = "http://10.0.2.20:4566";
 
     @Autowired
     private StorageProperties storageProperties;

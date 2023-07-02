@@ -2,15 +2,20 @@ version: "3.9"
 
 networks:
   algafood-network:
-    driver: bridge
+    name: algafood-network
+    ipam:
+      config:
+        - subnet: 10.0.2.0/24
 
 volumes:
   db-data:
   aws-s3:
 
 services:
+
   algafood-mysql:
-    image: mysql:8.0.32
+    image: mysql:8.0.33
+    container_name: algafood-mysql
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     environment:
@@ -27,6 +32,7 @@ services:
 
   algafood-redis:
     image: redis:6.2.11-alpine
+    container_name: algafood-redis
     restart: always
     networks:
       - algafood-network
@@ -34,7 +40,7 @@ services:
   algafood-api:
     build: ../
     image: algafood-api
-    command: ["/wait-for-it.sh", "algafood-mysql:3306", "-t", "30", "--", "java", "-Xms896m", "-Xmx1024m", "-jar", "algafood-api.jar"]
+    command: [ "/wait-for-it.sh", "algafood-mysql:3306", "-t", "30", "--", "java", "-Xms896m", "-Xmx1024m", "-jar", "algafood-api.jar" ]
     environment:
       - SPRING_PROFILES_ACTIVE=development
       - DB_HOST=algafood-mysql
@@ -48,6 +54,7 @@ services:
   algafood-proxy:
     build: ../nginx
     image: algafood-proxy
+    container_name: algafood-proxy
     ports:
       - "80:80"
     networks:
@@ -57,6 +64,7 @@ services:
 
   algafood-localstack:
     image: localstack/localstack:2.1-amd64
+    container_name: algafood-localstack
     environment:
       - SERVICES=s3
       - DEBUG=1
@@ -71,9 +79,9 @@ services:
     #        - USE_SSL=1
     networks:
       algafood-network:
-        ipv4_address: 172.17.0.2
+        ipv4_address: 10.0.2.20
     ports:
-      - "4566:4566" # s3
+      - "127.0.0.1:4566:4566"
     volumes:
       - aws-s3:/root/localstack/s3
       - /var/run/docker.sock:/var/run/docker.sock
