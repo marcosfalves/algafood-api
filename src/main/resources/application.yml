@@ -2,6 +2,22 @@ server:
   port: ${SERVER_PORT:8081}
   forward-headers-strategy: framework
 
+#Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,flyway,info
+  endpoint:
+    metrics:
+      enabled: true
+    flyway:
+      enabled: true
+    info:
+      enabled: true
+    health:
+      show-details: when_authorized
+
 spring:
   profiles:
     active: development
