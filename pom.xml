@@ -28,10 +28,6 @@
 		<sonar-maven-plugin.version>3.9.1.2184</sonar-maven-plugin.version>
 		<sonar.organization>marcosfalves</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
-<!--		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>-->
-<!--		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>-->
-<!--		<sonar.coverage.jacoco.xmlReportPaths>${project.build.directory}/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>-->
-<!--		<sonar.language>java</sonar.language>-->
 	</properties>
 	<dependencies>
 		<!--	Analisa properties que tiveram nome alterado em atualizações do Spring	-->
@@ -261,7 +257,6 @@
 						<goals>
 							<goal>prepare-agent</goal>
 						</goals>
-<!--						<phase>test-compile</phase>-->
 					</execution>
 					<execution>
 						<id>report</id>
