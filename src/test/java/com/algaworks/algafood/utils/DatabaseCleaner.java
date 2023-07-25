@@ -10,15 +10,13 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 public class DatabaseCleaner {
-
-	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	private DataSource dataSource;
@@ -68,10 +66,12 @@ public class DatabaseCleaner {
 	}
 
 	private void clear(List<String> tableNames) throws SQLException {
-		Statement statement = buildSqlStatement(tableNames);
+		try (Statement statement = buildSqlStatement(tableNames)) {
 
-		logger.debug("Executing SQL");
-		statement.executeBatch();
+			log.debug("Executing SQL");
+			statement.executeBatch();
+			log.info("Cleaning database test tables");
+		}
 	}
 
 	private Statement buildSqlStatement(List<String> tableNames) throws SQLException {
@@ -95,7 +95,7 @@ public class DatabaseCleaner {
 	}
 
 	private String sql(String sql) {
-		logger.debug("Adding SQL: {}", sql);
+		log.debug("Adding SQL: {}", sql);
 		return sql;
 	}
 	

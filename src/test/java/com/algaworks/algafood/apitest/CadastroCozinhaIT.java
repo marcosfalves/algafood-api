@@ -2,26 +2,28 @@ package com.algaworks.algafood.apitest;
 
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.repository.CozinhaRepository;
-import com.algaworks.algafood.utils.DatabaseCleaner;
+import com.algaworks.algafood.utils.ApiTestSecurity;
 import com.algaworks.algafood.utils.ResourceUtils;
-import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
 
-import static io.restassured.RestAssured.given;
+import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
+@AutoConfigureMockMvc
 @TestPropertySource(properties = { "spring.config.location=classpath:application-test.yml" })
-class CadastroCozinhaIT {
+class CadastroCozinhaIT extends IntegrationTestBase {
 
 	private static final int COZINHA_ID_INEXISTENTE = 100;
 
@@ -29,29 +31,22 @@ class CadastroCozinhaIT {
 	private int quantidadeCozinhasCadastradas;
 	private String jsonCorretoCozinhaChinesa;
 
-	@LocalServerPort
-	private int port;
-
-	@Autowired
-	private DatabaseCleaner databaseCleaner;
-
 	@Autowired
 	private CozinhaRepository cozinhaRepository;
 
 	@BeforeEach
 	void setUp() {
-		RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
-		RestAssured.port = port;
-		RestAssured.basePath = "/cozinhas";
+		RestAssuredMockMvc.basePath = "/v1/cozinhas";
 
 		jsonCorretoCozinhaChinesa = ResourceUtils.getContentFromResource(
 				"/json/correto/cozinha-chinesa.json");
 
-		databaseCleaner.clearTables();
+		super.databaseCleaner.clearTables();
 		prepararDados();
 	}
 
 	@Test
+	@ApiTestSecurity.AuthenticatedRead
 	public void deveRetornarStatus200_QuandoConsultarCozinhas(){
 		given()
 			.accept(ContentType.JSON)
@@ -62,16 +57,24 @@ class CadastroCozinhaIT {
 	}
 
 	@Test
+    @ApiTestSecurity.AuthenticatedRead
 	public void deveRetornarQuantidadeCorretaDeCozinhas_QuandoConsultarCozinhas() {
 		given()
 			.accept(ContentType.JSON)
 		.when()
 			.get()
 		.then()
-			.body("", hasSize(quantidadeCozinhasCadastradas));
+			.body("_embedded.cozinhas", hasSize(quantidadeCozinhasCadastradas));
 	}
 
 	@Test
+	@WithMockUser(
+			authorities = {
+					"SCOPE_READ",
+					"SCOPE_WRITE",
+					"EDITAR_COZINHAS"
+			}
+	)
 	public void deveRetornarStatus201_QuandoCadastrarCozinha(){
 		given()
 			.body(jsonCorretoCozinhaChinesa)
@@ -84,24 +87,24 @@ class CadastroCozinhaIT {
 	}
 
 	@Test
+    @ApiTestSecurity.AuthenticatedRead
 	public void deveRetornarRespostaEStatusCorretos_QuandoConsultarCozinhaExistente() {
 		given()
-			.pathParam("cozinhaId", cozinhaExistente.getId())
 			.accept(ContentType.JSON)
 		.when()
-			.get("/{cozinhaId}")
+			.get(cozinhaExistente.getId().toString())
 		.then()
 			.statusCode(HttpStatus.OK.value())
 			.body("nome", equalTo(cozinhaExistente.getNome()));
 	}
 
 	@Test
+    @ApiTestSecurity.AuthenticatedRead
 	public void deveRetornarStatus404_QuandoConsultarCozinhaInexistente() {
 		given()
-			.pathParam("cozinhaId", COZINHA_ID_INEXISTENTE)
 			.accept(ContentType.JSON)
 		.when()
-			.get("/{cozinhaId}")
+			.get(String.valueOf(COZINHA_ID_INEXISTENTE))
 		.then()
 			.statusCode(HttpStatus.NOT_FOUND.value());
 	}

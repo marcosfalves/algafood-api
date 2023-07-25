@@ -21,6 +21,13 @@
 		<logback-ext-loggly.version>0.1.5</logback-ext-loggly.version>
 		<springdoc.version>2.0.4</springdoc.version>
 		<springauthserver.version>1.0.1</springauthserver.version>
+
+		<jacoco-maven-plugin.version>0.8.10</jacoco-maven-plugin.version>
+		<maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
+
+		<sonar-maven-plugin.version>3.9.1.2184</sonar-maven-plugin.version>
+		<sonar.organization>marcosfalves</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
 	<dependencies>
 		<!--	Analisa properties que tiveram nome alterado em atualizações do Spring	-->
@@ -159,9 +166,15 @@
 			<artifactId>commons-lang3</artifactId>
 		</dependency>
 
+		<!-- Testes -->
 		<dependency>
 			<groupId>io.rest-assured</groupId>
 			<artifactId>rest-assured</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.rest-assured</groupId>
+			<artifactId>spring-mock-mvc</artifactId>
 			<scope>test</scope>
 		</dependency>
 
@@ -209,10 +222,62 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+
 			<plugin>
 				<artifactId>maven-failsafe-plugin</artifactId>
 			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${maven-surefire-plugin.version}</version>
+			</plugin>
+
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${jacoco-maven-plugin.version}</version>
+				<configuration>
+					<excludes>
+						<exclude>**/AlgafoodApiApplication.*</exclude>
+						<exclude>**/OpenApiConfiguration.*</exclude>
+						<exclude>**/core/**</exclude>
+						<exclude>**/api/**</exclude>
+						<exclude>**/domain/exception/**</exclude>
+						<exclude>**/domain/event/**</exclude>
+						<exclude>**/domain/filter/**</exclude>
+						<exclude>**/domain/model/dto/**</exclude>
+						<exclude>**/infrastructure/repository/spec/**</exclude>
+						<exclude>**/infrastructure/service/report/**</exclude>
+					</excludes>
+				</configuration>
+				<executions>
+					<execution>
+						<id>jacoco-initialize</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
+
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.sonarsource.scanner.maven</groupId>
+					<artifactId>sonar-maven-plugin</artifactId>
+					<version>${sonar-maven-plugin.version}</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 
 </project>
