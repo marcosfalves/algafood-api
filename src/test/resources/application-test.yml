@@ -11,14 +11,8 @@ spring:
   jpa:
     open-in-view: true
 
-  datasource:
-    url: "jdbc:mysql://localhost:3306/algafood_test?createDatabaseIfNotExist=true&serverTimezone=UTC"
-    username: root
-    password: 1234
-    hikari:
-      maximum-pool-size: 1
   flyway:
-    locations: "classpath:db/migration"
+    locations: "classpath:db/migration,classpath:db/testdata"
 
   data:
     redis:
@@ -33,10 +27,10 @@ algafood:
   storage:
     tipo: local
     local:
-      diretorio-fotos: "/home/malves/catalogo"
+      diretorio-fotos: "teste"
 
   auth:
-    provider-url: "http://localhost:${SERVER_PORT:8081}"
+    provider-url: "http://teste"
 
   jwt:
     keystore:
