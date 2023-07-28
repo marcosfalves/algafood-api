@@ -6,10 +6,12 @@ import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 
 class CadastroCozinhaIT extends AbstractIntegrationTest {
 
@@ -26,22 +28,23 @@ class CadastroCozinhaIT extends AbstractIntegrationTest {
 	}
 
 	@Test
+	@WithAnonymousUser
+	void deveRetornarStatus403_QuandoUsuarioAutenticadoNaoPossuirPermissao() {
+		given()
+        .when()
+		  .get()
+		.then()
+		  .statusCode(HttpStatus.FORBIDDEN.value());
+	}
+
+	@Test
 	@ApiTestSecurity.AuthenticatedRead
 	void deveRetornarStatus200_QuandoConsultarCozinhas(){
 		given()
 		.when()
 			.get()
 		.then()
-			.statusCode(HttpStatus.OK.value());
-	}
-
-	@Test
-    @ApiTestSecurity.AuthenticatedRead
-	void deveRetornarQuantidadeCorretaDeCozinhas_QuandoConsultarCozinhas() {
-		given()
-		.when()
-			.get()
-		.then()
+			.statusCode(HttpStatus.OK.value())
 			.body("_embedded.cozinhas", notNullValue());
 	}
 

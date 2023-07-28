@@ -2,7 +2,6 @@ package com.algaworks.algafood.apitest;
 
 import com.algaworks.algafood.utils.ApiTestSecurity;
 import com.algaworks.algafood.utils.ResourceUtils;
-import io.restassured.http.ContentType;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -101,8 +100,6 @@ class CadastroRestauranteIT extends AbstractIntegrationTest {
     void deveRetornarStatus400_QuandoCadastrarRestauranteSemTaxaFrete() {
         given()
             .body(jsonRestauranteSemFrete)
-            .contentType(ContentType.JSON)
-            .accept(ContentType.JSON)
         .when()
             .post()
         .then()
