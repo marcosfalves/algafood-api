@@ -1,6 +1,5 @@
 package com.algaworks.algafood.api;
 
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.experimental.UtilityClass;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -16,11 +15,14 @@ public class ResourceUriHelper {
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri()
 			.path("/{id}")
 			.buildAndExpand(resourceId).toUri();
-		
-		HttpServletResponse response = ((ServletRequestAttributes) 
-				RequestContextHolder.getRequestAttributes()).getResponse();
-		
-		response.setHeader(HttpHeaders.LOCATION, uri.toString());
+
+		var requestAttributes = RequestContextHolder.getRequestAttributes();
+		if (requestAttributes != null) {
+			var response = ((ServletRequestAttributes) requestAttributes).getResponse();
+			if (response != null) {
+				response.setHeader(HttpHeaders.LOCATION, uri.toString());
+			}
+		}
 	}
 	
 }
