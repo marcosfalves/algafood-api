@@ -46,14 +46,10 @@ public class AuthorizationServerConfig {
 
         httpSecurity
                 .securityMatcher(endpointsMatcher)
-                .authorizeHttpRequests(authorize -> {
-                    authorize.anyRequest().authenticated();
-                })
+                .authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated())
                 .csrf(csrf -> csrf.ignoringRequestMatchers(endpointsMatcher))
                 .formLogin(customizer -> customizer.loginPage("/login"))
-                .exceptionHandling(exceptions -> {
-                    exceptions.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"));
-                })
+                .exceptionHandling(exceptions -> exceptions.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login")))
                 .apply(authorizationServerConfigurer);
 
         return httpSecurity.build();
