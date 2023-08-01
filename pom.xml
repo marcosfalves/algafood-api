@@ -26,8 +26,8 @@
 		<maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
 
 		<sonar-maven-plugin.version>3.9.1.2184</sonar-maven-plugin.version>
-		<sonar.organization>marcosfalves</sonar.organization>
-		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+<!--		<sonar.organization>marcosfalves</sonar.organization>-->
+<!--		<sonar.host.url>https://sonarcloud.io</sonar.host.url>-->
 	</properties>
 
 	<dependencyManagement>
@@ -266,8 +266,8 @@
 				<version>${jacoco-maven-plugin.version}</version>
 				<configuration>
 					<excludes>
-						<exclude>**/AlgafoodApiApplication.*</exclude>
-						<exclude>**/OpenApiConfiguration.*</exclude>
+						<exclude>**/AlgafoodApiApplication.java</exclude>
+						<exclude>**/OpenApiConfiguration.java</exclude>
 						<exclude>**/core/**</exclude>
 						<exclude>**/api/**</exclude>
 						<exclude>**/domain/exception/**</exclude>
