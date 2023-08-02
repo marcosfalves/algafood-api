@@ -5,6 +5,7 @@ import jakarta.validation.ConstraintValidatorContext;
 import jakarta.validation.ValidationException;
 import org.springframework.beans.BeanUtils;
 
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 
 public class ValorZeroIncluiDescricaoValidator implements ConstraintValidator<ValorZeroIncluiDescricao, Object> {
@@ -24,11 +25,9 @@ public class ValorZeroIncluiDescricaoValidator implements ConstraintValidator<Va
         boolean valido = true;
 
         try {
-            BigDecimal valor = (BigDecimal) BeanUtils.getPropertyDescriptor(objetoValidacao.getClass(), valorField)
-                    .getReadMethod().invoke(objetoValidacao);
+            BigDecimal valor = (BigDecimal) getPropertyValue(objetoValidacao, valorField);
 
-            String descricao = (String) BeanUtils.getPropertyDescriptor(objetoValidacao.getClass(), descricaoField)
-                    .getReadMethod().invoke(objetoValidacao);
+            String descricao = (String) getPropertyValue(objetoValidacao, descricaoField);
 
             if (valor != null && BigDecimal.ZERO.compareTo(valor) == 0 && descricao != null) {
                 valido = descricao.toLowerCase().contains(this.descricaoObrigatoria.toLowerCase());
@@ -38,6 +37,14 @@ public class ValorZeroIncluiDescricaoValidator implements ConstraintValidator<Va
         } catch (Exception e) {
             throw new ValidationException(e);
         }
+    }
+
+    private Object getPropertyValue(Object objetoValidacao, String propertyName) throws InvocationTargetException, IllegalAccessException {
+        var propertyDescriptor = BeanUtils.getPropertyDescriptor(objetoValidacao.getClass(), propertyName);
+        if (propertyDescriptor != null) {
+            return propertyDescriptor.getReadMethod().invoke(objetoValidacao);
+        }
+        return null;
     }
 
 }
