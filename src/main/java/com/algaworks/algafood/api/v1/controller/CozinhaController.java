@@ -77,6 +77,8 @@ public class CozinhaController implements CozinhaControllerOpenApi {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CozinhaModel adicionar(@RequestBody @Valid CozinhaInput cozinhaInput) {
+        log.info("m=adicionar msg=Cadastrando cozinha body={}", cozinhaInput);
+
         Cozinha cozinha = cozinhaInputDisassembler.toDomainObject(cozinhaInput);
 
         cozinha = cadastroCozinha.salvar(cozinha);
