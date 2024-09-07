@@ -40,7 +40,15 @@ services:
   algafood-api:
     build: ../
     image: algafood-api
-    command: [ "/wait-for-it.sh", "algafood-mysql:3306", "-t", "30", "--", "java", "-Xms896m", "-Xmx1024m", "-jar", "algafood-api.jar" ]
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 512M
+        reservations:
+          cpus: "0.25"
+          memory: 256M
+    command: [ "/wait-for-it.sh", "algafood-mysql:3306", "-t", "30", "--", "java", "-XX:MaxRAMPercentage=80", "-jar", "algafood-api.jar" ]
     environment:
       - SPRING_PROFILES_ACTIVE=development
       - DB_HOST=algafood-mysql
